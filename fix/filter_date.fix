@@ -1,4 +1,4 @@
-# title: Filtre par les dates
+# title: Filtrer par date
 # id: filtre_date
 # description: Exemple d'implémentation d'un FIX Catamandu avec une sélection de notices par les dates.
 
