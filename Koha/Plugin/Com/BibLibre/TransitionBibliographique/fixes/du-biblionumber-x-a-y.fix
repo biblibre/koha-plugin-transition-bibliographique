@@ -1,0 +1,14 @@
+# title: Du biblionumber X à Y
+# description: Filtre un intervalle de biblionumber
+
+marc_map(001, 'id')
+# Dans cet exemple: si le biblionumber est entre 1100 et 1200
+if greater_than(id,'1100')
+  if less_than(id,'1200')
+    # Garde
+  else
+    reject()
+  end
+else
+  reject()
+end
