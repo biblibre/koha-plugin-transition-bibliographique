@@ -1,0 +1,76 @@
+[% INCLUDE 'doc-head-open.inc' %]
+ <title>Koha: Transition Bibliographique</title>
+[% INCLUDE 'doc-head-close.inc' %]
+</head>
+<body>
+[% INCLUDE 'header.inc' %]
+[% INCLUDE 'cat-search.inc' %]
+
+<div id="breadcrumbs"><a href="/cgi-bin/koha/mainpage.pl">Home</a> &rsaquo; <a href="/cgi-bin/koha/plugins/plugins-home.pl">Plugins</a> &rsaquo; Transition Bibliographique &rsaquo; Export</div>
+
+<div class="main container-fluid">
+    <div class="row">
+        <div class="col-sm-10 col-sm-push-2">
+            <p>Export</p>
+
+            <form>
+                <div>
+                    <select required>
+                        <option value="">Sélectionnez un fichier</option>
+                        [% FOREACH file IN files %]
+                            <option value="[% file %]">[% file %]</option>
+                        [% END %]
+                    </select>
+                </div>
+
+                <div>
+                    <select id="fix" required>
+                        <option value="">Sélectionnez un paramétrage</option>
+                        [% FOREACH fix IN fixes %]
+                            <option value="[% fix.name %]" data-content="[% fix.content %]">[% fix.name %]</option>
+                        [% END %]
+                    </select>
+                </div>
+                <div>
+                    <a href="#" id="modify-fix">Modifier le paramétrage</a>
+                    <textarea style="display: none;" id="fix-content"></textarea>
+                </div>
+                <script>
+                    $('#fix').on('change', function () {
+                        var select = $(this);
+                        var content = select.find('option:selected').attr('data-content');
+                        $('#fix-content').val(content);
+                    });
+                    $('#modify-fix').on('click', function () {
+                        $('#fix-content').toggle();
+                    });
+                </script>
+
+                <div>
+                    <select name="format" required>
+                        <option value="CSV">CSV</option>
+                        <option value="TSV">TSV</option>
+                        <option value="JSON">JSON</option>
+                        <option value="MARC">MARC</option>
+                    </select>
+                </div>
+
+                <div>
+                    <input type="text" name="filename" placeholder="Nom du fichier" value="koha-tb-export.csv">
+                </div>
+
+                <div>
+                    <button type="submit">Exporter</button>
+                </div>
+            </form>
+        </div>
+        <div class="col-sm-2 col-sm-pull-10">
+            <ul>
+                <li><a href="/cgi-bin/koha/plugins/run.pl?class=Koha%3A%3APlugin%3A%3ACom%3A%3ABibLibre%3A%3ATransitionBibliographique&method=tool&op=export">Export</a></li>
+                <li><a href="/cgi-bin/koha/plugins/run.pl?class=Koha%3A%3APlugin%3A%3ACom%3A%3ABibLibre%3A%3ATransitionBibliographique&method=tool&op=import">Import</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+[% INCLUDE 'intranet-bottom.inc' %]

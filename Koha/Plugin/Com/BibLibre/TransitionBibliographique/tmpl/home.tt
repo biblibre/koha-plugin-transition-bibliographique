@@ -1,0 +1,25 @@
+[% INCLUDE 'doc-head-open.inc' %]
+ <title>Koha: Transition Bibliographique</title>
+[% INCLUDE 'doc-head-close.inc' %]
+</head>
+<body>
+[% INCLUDE 'header.inc' %]
+[% INCLUDE 'cat-search.inc' %]
+
+<div id="breadcrumbs"><a href="/cgi-bin/koha/mainpage.pl">Home</a> &rsaquo; <a href="/cgi-bin/koha/plugins/plugins-home.pl">Plugins</a> &rsaquo; Transition Bibliographique</div>
+
+<div class="main container-fluid">
+    <div class="row">
+        <div class="col-sm-10 col-sm-push-2">
+            <p>Coucou, il faut cliquer sur les liens à gauche</p>
+        </div>
+        <div class="col-sm-2 col-sm-pull-10">
+            <ul>
+                <li><a href="/cgi-bin/koha/plugins/run.pl?class=Koha%3A%3APlugin%3A%3ACom%3A%3ABibLibre%3A%3ATransitionBibliographique&method=tool&op=export">Export</a></li>
+                <li><a href="/cgi-bin/koha/plugins/run.pl?class=Koha%3A%3APlugin%3A%3ACom%3A%3ABibLibre%3A%3ATransitionBibliographique&method=tool&op=import">Import</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+[% INCLUDE 'intranet-bottom.inc' %]
