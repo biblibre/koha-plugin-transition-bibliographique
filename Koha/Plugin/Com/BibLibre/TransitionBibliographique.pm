@@ -2,8 +2,11 @@ package Koha::Plugin::Com::BibLibre::TransitionBibliographique;
 
 use base qw(Koha::Plugins::Base);
 
+use Catmandu;
+use Catmandu::Sane;
 use Encode;
-use File::Slurp qw(read_file);
+use File::Slurp qw(read_file write_file);
+use File::Temp qw(tempfile);
 use YAML qw(LoadFile);
 
 our $VERSION = "0.1.0";
@@ -52,7 +55,6 @@ sub tool {
 
     my $template = $self->get_template({ file => 'tmpl/home.tt' });
     return $self->output_html( $template->output() );
-
 }
 
 sub export {
@@ -61,8 +63,56 @@ sub export {
     my $template = $self->get_template({ file => 'tmpl/export.tt' });
 
     $conf = $self->get_conf;
-
     my $export_path = $conf->{export}->{path};
+
+    my $cgi = $self->{cgi};
+
+    my $file = $cgi->param('file');
+    my $do_export = defined $file;
+
+    my $fix_content = $cgi->param('fix-content');
+    if ($fix_content && !$self->fix_is_valid($fix_content)) {
+        $template->param(error => 'Fix is not valid');
+        $do_export = 0;
+    }
+
+    if ($do_export) {
+        my $fix = $cgi->param('fix');
+        my $filepath = "$export_path/$file";
+
+        my $fixpath = $self->mbf_path("fixes/$fix");
+        if ($fix_content) {
+            my ($fh, $tempfilename) = tempfile();
+            print $fh $fix_content;
+            close $fh;
+            $fixpath = $tempfilename;
+        }
+
+        my $format = $cgi->param('format');
+
+        my $importer = Catmandu->importer('MARC', file => $filepath);
+        my $fixer = Catmandu->fixer($fixpath);
+        my $exporter = Catmandu->exporter($format);
+
+        my %content_type_mapping = (
+            CSV => 'text/csv',
+            TSV => 'text/csv',
+            JSON => 'application/json',
+            MARC => 'application/marc',
+        );
+
+        my $filename = $cgi->param('filename') || 'export';
+
+        print $cgi->header(
+            -type => $content_type_mapping{$format},
+            -content_disposition => "attachment; filename=$filename",
+        );
+        $exporter->add_many($fixer->fix($importer));
+        $exporter->commit;
+
+        return;
+    }
+
     my @files;
     opendir my $dh, $export_path;
     while (my $file = decode_utf8(readdir $dh)) {
@@ -83,7 +133,8 @@ sub export {
         }
 
         push @fixes, {
-            name => $title,
+            name => $fix,
+            title => $title,
             content => $fix_content,
         };
     }
@@ -94,6 +145,19 @@ sub export {
     );
 
     return $self->output_html( $template->output() );
+}
+
+sub fix_is_valid {
+    my ($self, $fix_content) = @_;
+
+    my $parser = Catmandu::Fix::Parser->new;
+    try {
+        my $fixes = $parser->parse($fix_content);
+
+        return 1;
+    } catch {
+        warn "Catmandu fix parser error: " . $_->message;
+    };
 }
 
 sub get_conf {
