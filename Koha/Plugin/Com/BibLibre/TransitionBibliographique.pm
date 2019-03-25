@@ -77,9 +77,13 @@ sub export {
         next if $fix =~ /^\./;
 
         my $fix_content = read_file("$fixes_path/$fix", binmode => ':utf8');
+        my $title = $fix;
+        if ($fix_content =~ /^# title: (.*)$/m) {
+            $title = $1;
+        }
 
         push @fixes, {
-            name => $fix,
+            name => $title,
             content => $fix_content,
         };
     }
