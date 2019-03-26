@@ -1,3 +1,4 @@
+[% USE CGI %]
 [% INCLUDE 'doc-head-open.inc' %]
  <title>Koha: Transition Bibliographique</title>
 [% INCLUDE 'doc-head-close.inc' %]
@@ -13,13 +14,22 @@
         <div class="col-sm-10 col-sm-push-2">
             <h1>Export</h1>
 
-            <form>
+            [% IF errors && errors.size > 0 %]
+                [% FOREACH error IN errors %]
+                    <div class="alert alert-danger">
+                        [% error %]
+                    </div>
+                [% END %]
+            [% END %]
+
+            <form method="post" action="/cgi-bin/koha/plugins/run.pl">
                 <div class="form-group">
                     <label for="file">Fichier</label>
                     <select class="form-control" id="file" name="file" required>
                         <option value="">Sélectionnez un fichier</option>
                         [% FOREACH file IN files %]
-                            <option value="[% file %]">[% file %]</option>
+                            [%# selected = (CGI.param('file') == file) %]
+                            <option value="[% file %]" [% IF selected %]selected[% END %]>[% file %]</option>
                         [% END %]
                     </select>
                 </div>
@@ -29,45 +39,30 @@
                     <select class="form-control" id="fix" name="fix" required>
                         <option value="">Sélectionnez un paramétrage</option>
                         [% FOREACH fix IN fixes %]
-                            <option value="[% fix.name %]" data-content="[% fix.content %]">[% fix.title %]</option>
+                            [% selected = (CGI.param('fix') == fix.name) %]
+                            <option value="[% fix.name %]" data-content="[% fix.content %]" [% IF selected %]selected[% END %]>[% fix.title %]</option>
                         [% END %]
                     </select>
+                    <details id="modify-fix">
+                        <summary>Modifier le paramétrage</summary>
+
+                        <textarea rows="10" class="form-control" id="fix-content" name="fix-content" disabled>[% CGI.param('fix-content') %]</textarea>
                 </div>
-                <div class="form-group">
-                    <a href="#" id="modify-fix">Modifier le paramétrage</a>
-                    <textarea rows="10" class="form-control" style="display: none;" id="fix-content" name="fix-content"></textarea>
-                </div>
-                <script>
-                    $('#fix').on('change', function () {
-                        var select = $(this);
-                        var content = select.find('option:selected').attr('data-content');
-                        $('#fix-content').val(content);
-                    });
-                    $('#modify-fix').on('click', function () {
-                        const fix_content = $('#fix-content');
-                        if (fix_content.is(':visible')) {
-                            fix_content.hide();
-                            fix_content.attr('disabled', true);
-                        } else {
-                            fix_content.show();
-                            fix_content.attr('disabled', false);
-                        }
-                    });
-                </script>
 
                 <div class="form-group">
+                    [% formats = ['CSV', 'TSV', 'JSON', 'MARC'] %]
                     <label for="format">Format</label>
                     <select class="form-control" id="format" name="format">
-                        <option value="CSV">CSV</option>
-                        <option value="TSV">TSV</option>
-                        <option value="JSON">JSON</option>
-                        <option value="MARC">MARC</option>
+                        [% FOREACH format IN formats %]
+                            [% selected = (CGI.param('format') == format) %]
+                            <option value="[% format %]" [% IF selected %]selected[% END %]>[% format %]</option>
+                        [% END %]
                     </select>
                 </div>
 
                 <div class="form-group">
                     <label for="filename">Nom du fichier de sortie</label>
-                    <input class="form-control" type="text" name="filename" id="filename" placeholder="Nom du fichier" value="koha-tb-export.csv">
+                    <input class="form-control" type="text" name="filename" id="filename" placeholder="Nom du fichier" value="[% CGI.param('filename') || 'koha-tb-export.csv' %]">
                 </div>
 
                 <input type="hidden" name="class" value="[% CLASS %]">
@@ -85,5 +80,36 @@
         </div>
     </div>
 </div>
+
+<script>
+(function () {
+    document.addEventListener('DOMContentLoaded', function () {
+        $('#fix').on('change', function () {
+            var select = $(this);
+            var content = select.find('option:selected').attr('data-content');
+            $('#fix-content').val(content);
+        });
+
+        const details = document.getElementById('modify-fix');
+        details.addEventListener('toggle', function () {
+            const fixContent = this.querySelector('textarea');
+            if (this.open) {
+                fixContent.removeAttribute('disabled');
+            } else {
+                fixContent.setAttribute('disabled', '');
+            }
+        });
+
+        const format = document.getElementById('format');
+        format.addEventListener('change', function () {
+            const filename = document.getElementById('filename');
+            const selectedFormat = this.selectedOptions[0].value.toLowerCase();
+            const value = filename.value.replace(/\.[^.]+$/, '.' + selectedFormat);
+            filename.value = value;
+        });
+        format.dispatchEvent(new Event('change'));
+    });
+})();
+</script>
 
 [% INCLUDE 'intranet-bottom.inc' %]
