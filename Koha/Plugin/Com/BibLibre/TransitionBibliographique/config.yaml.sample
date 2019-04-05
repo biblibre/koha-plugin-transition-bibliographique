@@ -1,2 +1,4 @@
 export:
     path: /home/koha/var/lib/transition-bibliographique/export
+import:
+    upload_path: /home/koha/var/lib/transition-bibliographique/upload

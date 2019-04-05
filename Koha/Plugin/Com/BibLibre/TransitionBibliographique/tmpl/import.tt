@@ -1,0 +1,103 @@
+[% USE CGI %]
+[% INCLUDE 'doc-head-open.inc' %]
+ <title>Koha: Transition Bibliographique - Import</title>
+[% INCLUDE 'doc-head-close.inc' %]
+</head>
+<body>
+[% INCLUDE 'header.inc' %]
+[% INCLUDE 'cat-search.inc' %]
+
+<div id="breadcrumbs"><a href="/cgi-bin/koha/mainpage.pl">Home</a> &rsaquo; <a href="/cgi-bin/koha/plugins/plugins-home.pl">Plugins</a> &rsaquo; Transition Bibliographique &rsaquo; Import</div>
+
+<div class="main container-fluid">
+    <div class="row">
+        <div class="col-sm-10 col-sm-push-2">
+            <h1>Import</h1>
+
+            [% IF errors && errors.size > 0 %]
+                [% FOREACH error IN errors %]
+                    <div class="alert alert-danger">
+                        [% error %]
+                    </div>
+                [% END %]
+            [% END %]
+
+            <form method="post" enctype="multipart/form-data" action="/cgi-bin/koha/plugins/run.pl">
+                <div class="form-group">
+                    <label for="file">Fichier</label>
+                    <input type="file" name="file" id="file" accept=".csv">
+                </div>
+
+                <div class="form-group">
+                    <label for="type">Type de fichier</label>
+                    <select class="form-control" id="type" name="type" required>
+                        <option value="">Sélectionnez un type de fichier</option>
+                        <option value="biblio">Notices bibliographiques</option>
+                        <option value="authority">Notices d'autorités</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="id_column_name">Nom de la colonne contenant l'identifiant interne</label>
+                    <input type="text" id="id_column_name" name="id_column_name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="ark_column_name">Nom de la colonne contenant l'identifiant ARK</label>
+                    <input type="text" id="ark_column_name" name="ark_column_name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="marc_subfield">Sous-champ MARC destinataire</label>
+                    <input type="text" id="marc_subfield" name="marc_subfield" placeholder="XXX$y" required>
+                </div>
+
+                <input type="hidden" name="class" value="[% CLASS %]">
+                <input type="hidden" name="method" value="[% METHOD %]">
+                <input type="hidden" name="op" value="import">
+
+                <button class="btn btn-default" type="submit">Importer</button>
+            </form>
+
+            [% IF jobs && jobs.size > 0 %]
+                <h2>Last enqueued jobs</h2>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Type</th>
+                            <th>File</th>
+                            <th>State</th>
+                            <th>Enqueued at</th>
+                            <th>Started at</th>
+                            <th>Finished at</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        [% FOREACH job IN jobs %]
+                            <tr>
+                                <td>[% job.id %]</td>
+                                <td>[% job.args.type %]</td>
+                                <td>[% job.args.filepath %]</td>
+                                <td>[% job.state %]</td>
+                                <td>[% job.enqueued_at %]</td>
+                                <td>[% job.started_at %]</td>
+                                <td>[% job.finished_at %]</td>
+                            </tr>
+                        [% END %]
+                    </tbody>
+                </table>
+            [% END %]
+        </div>
+
+        <div class="col-sm-2 col-sm-pull-10">
+            <ul>
+                <li><a href="/cgi-bin/koha/plugins/run.pl?class=Koha%3A%3APlugin%3A%3ACom%3A%3ABibLibre%3A%3ATransitionBibliographique&method=tool&op=export">Export</a></li>
+                <li><a href="/cgi-bin/koha/plugins/run.pl?class=Koha%3A%3APlugin%3A%3ACom%3A%3ABibLibre%3A%3ATransitionBibliographique&method=tool&op=import">Import</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+[% INCLUDE 'intranet-bottom.inc' %]
