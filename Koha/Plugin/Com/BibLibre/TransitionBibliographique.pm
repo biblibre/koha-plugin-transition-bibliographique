@@ -101,6 +101,8 @@ sub tool {
         return $self->export($args);
     } elsif ($op eq 'import') {
         return $self->import_action($args);
+    } elsif ($op eq 'import_logs') {
+        return $self->import_logs_action($args);
     }
 
     my $template = $self->get_template({ file => 'tmpl/home.tt' });
@@ -208,6 +210,30 @@ sub import_action {
     }
 
     $template->param(jobs => $jobs);
+
+    return $self->output_html( $template->output() );
+}
+
+sub import_logs_action {
+    my ($self, $args) = @_;
+
+    my $template = $self->get_template({ file => 'tmpl/import_logs.tt' });
+
+    my $cgi = $self->{cgi};
+    my $job_id = $cgi->param('job_id');
+
+    my $dbh = C4::Context->dbh;
+    my $jobs_logs_table = $self->get_qualified_table_name('jobs_logs');
+    my $job_logs = $dbh->selectall_arrayref(qq{
+        SELECT * FROM $jobs_logs_table
+        WHERE job_id = ?
+        ORDER BY logged_at ASC
+    }, { Slice => {} }, $job_id);
+
+    $template->param(
+        job_id => $job_id,
+        job_logs => $job_logs,
+    );
 
     return $self->output_html( $template->output() );
 }

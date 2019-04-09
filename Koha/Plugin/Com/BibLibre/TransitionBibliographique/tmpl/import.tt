@@ -72,6 +72,7 @@
                             <th>Enqueued at</th>
                             <th>Started at</th>
                             <th>Finished at</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -84,6 +85,15 @@
                                 <td>[% job.enqueued_at %]</td>
                                 <td>[% job.started_at %]</td>
                                 <td>[% job.finished_at %]</td>
+                                <td>
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-xs btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Action <span class="caret"></span>
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li><a href="/cgi-bin/koha/plugins/run.pl?class=[% CLASS %]&method=[% METHOD %]&op=import_logs&job_id=[% job.id %]">View logs</a></li>
+                                        </ul>
+                                    </div>
+                                </td>
                             </tr>
                         [% END %]
                     </tbody>
