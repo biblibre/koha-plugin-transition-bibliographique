@@ -20,6 +20,7 @@ use C4::Context;
 
 use Koha::Authorities;
 use Koha::Authority;
+use Koha::Database;
 
 our $VERSION = "0.1.0";
 
@@ -189,7 +190,7 @@ sub import_action {
                 file => scalar $cgi->param('file'),
                 type => scalar $cgi->param('type'),
                 id_column_name => scalar $cgi->param('id_column_name'),
-                ark_column_name => scalar $cgi->param('ark_column_name'),
+                external_id_column_name => scalar $cgi->param('external_id_column_name'),
                 marc_subfield => scalar $cgi->param('marc_subfield'),
             });
         }
@@ -368,7 +369,7 @@ sub do_import {
     my $job_args = {
         type => $args->{type},
         id_column_name => $args->{id_column_name},
-        ark_column_name => $args->{ark_column_name},
+        external_id_column_name => $args->{external_id_column_name},
         marc_subfield => $args->{marc_subfield},
         filepath => $filepath,
     };
@@ -386,7 +387,44 @@ sub import_validate_form {
     my @errors;
     my $cgi = $self->{cgi};
 
-    # TODO
+    my $file = $cgi->param('file');
+    if (!$file) {
+        push @errors, "No file selected";
+    }
+
+    my $type = $cgi->param('type');
+    my ($tag_structure_source_name, $subfield_structure_source_name);
+    if ($type eq 'biblio') {
+        $tag_structure_source_name = 'MarcTagStructure';
+        $subfield_structure_source_name = 'MarcSubfieldStructure';
+    } elsif ($type eq 'authority') {
+        $tag_structure_source_name = 'AuthTagStructure';
+        $subfield_structure_source_name = 'AuthSubfieldStructure';
+    }
+
+    my $marc_subfield = $cgi->param('marc_subfield');
+    if ($marc_subfield =~ /^\d{3}\$[a-zA-Z0-9]$/) {
+        my ($tag, $code) = split /\$/, $marc_subfield;
+        my $schema = Koha::Database->schema;
+        my $tag_rs = $schema->resultset($tag_structure_source_name);
+        my $subfield_rs = $schema->resultset($subfield_structure_source_name);
+
+        my $tag_structure = $tag_rs->find('', $tag);
+        if ($tag_structure) {
+            if (!$tag_structure->repeatable) {
+                push @errors, "MARC field $tag is not repeatable";
+            }
+        } else {
+            push @errors, "MARC field $tag does not exist in default framework";
+        }
+
+        my $subfield_structure = $subfield_rs->find('', $tag, $code);
+        if (!$subfield_structure) {
+            push @errors, "MARC subfield $tag\$$code does not exist in default framework";
+        }
+    } else {
+        push @errors, "MARC subfield should be in the format 'XXX\$y'";
+    }
 
     return @errors;
 }
@@ -475,7 +513,7 @@ sub execute_job {
     my $type = $args->{type};
     my $filepath = $args->{filepath};
     my $id_column_name = $args->{id_column_name};
-    my $ark_column_name = $args->{ark_column_name};
+    my $external_id_column_name = $args->{external_id_column_name};
     my $marc_subfield = $args->{marc_subfield};
 
     $self->start_job($job);
@@ -491,9 +529,9 @@ sub execute_job {
         die "There is no column named $id_column_name";
     }
 
-    my $ark_idx = first_index { $_ eq $ark_column_name } @columns;
-    if ($ark_idx < 0) {
-    die "There is no column named $ark_column_name";
+    my $external_id_idx = first_index { $_ eq $external_id_column_name } @columns;
+    if ($external_id_idx < 0) {
+    die "There is no column named $external_id_column_name";
     }
 
     my ($tag, $code) = split /\$/, $marc_subfield;
@@ -505,9 +543,9 @@ sub execute_job {
         $csv->parse($line);
         my @fields = $csv->fields();
         my $id = $fields[$id_idx];
-        my $ark = $fields[$ark_idx];
+        my $external_id = $fields[$external_id_idx];
 
-        my $clean_identifier = $self->clean_identifier($ark);
+        my $clean_identifier = $self->clean_identifier($external_id);
         my $marc_record = $self->get_marc_record($type, $id);
         if ($marc_record) {
             my @fields = $marc_record->field($tag);
@@ -518,7 +556,7 @@ sub execute_job {
                 $self->job_log($job, "Identifier already present for id $id (line $linenumber)");
             } else {
                 $marc_record->insert_fields_ordered(
-                    MARC::Field->new($tag, '', '', $code => $ark),
+                    MARC::Field->new($tag, '', '', $code => $external_id),
                 );
                 $self->save_marc_record($type, $id, $marc_record);
                 $self->job_log($job, "Identifier added for id $id (line $linenumber)");

@@ -25,31 +25,32 @@
             <form method="post" enctype="multipart/form-data" action="/cgi-bin/koha/plugins/run.pl">
                 <div class="form-group">
                     <label for="file">Fichier</label>
-                    <input type="file" name="file" id="file" accept=".csv">
+                    <input type="file" name="file" id="file" accept=".csv" required>
                 </div>
 
                 <div class="form-group">
+                    [% type = CGI.param('type') %]
                     <label for="type">Type de fichier</label>
                     <select class="form-control" id="type" name="type" required>
                         <option value="">Sélectionnez un type de fichier</option>
-                        <option value="biblio">Notices bibliographiques</option>
-                        <option value="authority">Notices d'autorités</option>
+                        <option value="biblio" [% IF type == 'biblio' %]selected[% END %]>Notices bibliographiques</option>
+                        <option value="authority" [% IF type == 'authority' %]selected[% END %]>Notices d'autorités</option>
                     </select>
                 </div>
 
                 <div class="form-group">
                     <label for="id_column_name">Nom de la colonne contenant l'identifiant interne</label>
-                    <input type="text" id="id_column_name" name="id_column_name" required>
+                    <input type="text" class="form-control" id="id_column_name" name="id_column_name" required value="[% CGI.param('id_column_name') | html %]">
                 </div>
 
                 <div class="form-group">
-                    <label for="ark_column_name">Nom de la colonne contenant l'identifiant ARK</label>
-                    <input type="text" id="ark_column_name" name="ark_column_name" required>
+                    <label for="external_id_column_name">Nom de la colonne contenant l'identifiant externe</label>
+                    <input type="text" class="form-control" id="external_id_column_name" name="external_id_column_name" required value="[% CGI.param('external_id_column_name') | html %]">
                 </div>
 
                 <div class="form-group">
-                    <label for="marc_subfield">Sous-champ MARC destinataire</label>
-                    <input type="text" id="marc_subfield" name="marc_subfield" placeholder="XXX$y" required>
+                    <label for="marc_subfield">Sous-champ MARC cible</label>
+                    <input type="text" class="form-control" id="marc_subfield" name="marc_subfield" placeholder="XXX$y" required value="[% CGI.param('marc_subfield') | html %]">
                 </div>
 
                 <input type="hidden" name="class" value="[% CLASS %]">
