@@ -53,6 +53,16 @@
                     <input type="text" class="form-control" id="marc_subfield" name="marc_subfield" placeholder="XXX$y" required value="[% CGI.param('marc_subfield') | html %]">
                 </div>
 
+                <div class="form-group">
+                    <label for="identifier_format">Formatage des identifiants</label>
+                    <select class="form-control" id="identifier_format" name="identifier_format">
+                        [% identifier_format = CGI.param('identifier_format') %]
+                        <option value="">Conserver la valeur originale</option>
+                        <option value="clean" [% IF identifier_format == 'clean' %]selected[% END %]>Nettoyer</option>
+                        <option value="uri" [% IF identifier_format == 'uri' %]selected[% END %]>Convertir au format URI</option>
+                    </select>
+                </div>
+
                 <input type="hidden" name="class" value="[% CLASS %]">
                 <input type="hidden" name="method" value="[% METHOD %]">
                 <input type="hidden" name="op" value="import">
@@ -61,18 +71,18 @@
             </form>
 
             [% IF jobs && jobs.size > 0 %]
-                <h2>Last enqueued jobs</h2>
+                <h2>Traitements</h2>
 
                 <table>
                     <thead>
                         <tr>
                             <th>ID</th>
                             <th>Type</th>
-                            <th>File</th>
-                            <th>State</th>
-                            <th>Enqueued at</th>
-                            <th>Started at</th>
-                            <th>Finished at</th>
+                            <th>Fichier</th>
+                            <th>État</th>
+                            <th>Mis en file d'attente le</th>
+                            <th>Démarré le</th>
+                            <th>Terminé le</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -81,8 +91,16 @@
                             <tr>
                                 <td>[% job.id %]</td>
                                 <td>[% job.args.type %]</td>
-                                <td>[% job.args.filepath %]</td>
-                                <td>[% job.state %]</td>
+                                <td>[% job.args.original_filename %]</td>
+                                <td>
+                                    [% SWITCH job.state %]
+                                        [% CASE 'inactive' %]inactif
+                                        [% CASE 'active' %]actif
+                                        [% CASE 'error' %]erreur
+                                        [% CASE 'finished' %]terminé
+                                        [% CASE %][% job.state %]
+                                    [% END %]
+                                </td>
                                 <td>[% job.enqueued_at %]</td>
                                 <td>[% job.started_at %]</td>
                                 <td>[% job.finished_at %]</td>

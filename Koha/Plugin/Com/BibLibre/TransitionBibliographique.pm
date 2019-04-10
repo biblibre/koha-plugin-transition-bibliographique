@@ -192,7 +192,11 @@ sub import_action {
                 id_column_name => scalar $cgi->param('id_column_name'),
                 external_id_column_name => scalar $cgi->param('external_id_column_name'),
                 marc_subfield => scalar $cgi->param('marc_subfield'),
+                identifier_format => scalar $cgi->param('identifier_format'),
             });
+
+            print $cgi->redirect('/cgi-bin/koha/plugins/run.pl?class=Koha::Plugin::Com::BibLibre::TransitionBibliographique&method=tool&op=import');
+            return;
         }
 
         $template->param('errors' => \@errors);
@@ -371,6 +375,8 @@ sub do_import {
         id_column_name => $args->{id_column_name},
         external_id_column_name => $args->{external_id_column_name},
         marc_subfield => $args->{marc_subfield},
+        identifier_format => $args->{identifier_format},
+        original_filename => "$file", # apparently needs to be converted to string
         filepath => $filepath,
     };
 
@@ -389,7 +395,7 @@ sub import_validate_form {
 
     my $file = $cgi->param('file');
     if (!$file) {
-        push @errors, "No file selected";
+        push @errors, "Aucun fichier sélectionné";
     }
 
     my $type = $cgi->param('type');
@@ -412,18 +418,18 @@ sub import_validate_form {
         my $tag_structure = $tag_rs->find('', $tag);
         if ($tag_structure) {
             if (!$tag_structure->repeatable) {
-                push @errors, "MARC field $tag is not repeatable";
+                push @errors, "Le champ MARC $tag n'est pas répétable";
             }
         } else {
-            push @errors, "MARC field $tag does not exist in default framework";
+            push @errors, "Le champ MARC $tag n'existe pas dans la grille de catalogage par défaut";
         }
 
         my $subfield_structure = $subfield_rs->find('', $tag, $code);
         if (!$subfield_structure) {
-            push @errors, "MARC subfield $tag\$$code does not exist in default framework";
+            push @errors, "Le sous-champ MARC $tag\$$code n'existe pas dans la grille de catalogage par défaut";
         }
     } else {
-        push @errors, "MARC subfield should be in the format 'XXX\$y'";
+        push @errors, "Le sous-champ MARC doit être au format 'XXX\$y'";
     }
 
     return @errors;
@@ -454,10 +460,12 @@ sub execute_jobs {
     if (@$jobs) {
         foreach my $job (@$jobs) {
             eval {
+                say STDERR "Executing job " . $job->{id};
                 $self->execute_job($job);
             };
             if ($@) {
-                $self->job_log($job, 'Error while executing job : ' . $@);
+                say STDERR "Error: " . $@;
+                $self->job_log($job, "Erreur pendant le traitement : " . $@);
                 $self->error_job($job);
             }
         }
@@ -477,7 +485,7 @@ sub start_job {
         WHERE id = ?
     }, undef, $job->{id});
 
-    $self->job_log($job, 'Started import');
+    $self->job_log($job, 'Import démarré');
 }
 
 sub finish_job {
@@ -491,7 +499,7 @@ sub finish_job {
         WHERE id = ?
     }, undef, $job->{id});
 
-    $self->job_log($job, 'Finished import');
+    $self->job_log($job, 'Import terminé');
 }
 
 sub error_job {
@@ -515,6 +523,7 @@ sub execute_job {
     my $id_column_name = $args->{id_column_name};
     my $external_id_column_name = $args->{external_id_column_name};
     my $marc_subfield = $args->{marc_subfield};
+    my $identifier_format = $args->{identifier_format};
 
     $self->start_job($job);
 
@@ -526,16 +535,17 @@ sub execute_job {
 
     my $id_idx = first_index { $_ eq $id_column_name } @columns;
     if ($id_idx < 0) {
-        die "There is no column named $id_column_name";
+        die "Il n'y a pas de colonne nommée $id_column_name";
     }
 
     my $external_id_idx = first_index { $_ eq $external_id_column_name } @columns;
     if ($external_id_idx < 0) {
-    die "There is no column named $external_id_column_name";
+        die "Il n'y a pas de colonne nommée $external_id_column_name";
     }
 
     my ($tag, $code) = split /\$/, $marc_subfield;
 
+    my ($processed, $updated, $already_uptodate, $notfound) = (0, 0, 0, 0);
     my $linenumber = 1;
     while ($line = <$fh>) {
         $linenumber++;
@@ -553,18 +563,35 @@ sub execute_job {
                 any { $self->clean_identifier($_) eq $clean_identifier } $_->subfield($code);
             } @fields;
             if ($field) {
-                $self->job_log($job, "Identifier already present for id $id (line $linenumber)");
+                $self->job_log($job, "Identifiant déjà présent pour la notice $id (ligne $linenumber)");
+                $already_uptodate++;
             } else {
-                $marc_record->insert_fields_ordered(
-                    MARC::Field->new($tag, '', '', $code => $external_id),
-                );
-                $self->save_marc_record($type, $id, $marc_record);
-                $self->job_log($job, "Identifier added for id $id (line $linenumber)");
+                my $formatted_identifier = $self->format_identifier($external_id, $identifier_format);
+                if ($formatted_identifier) {
+                    $marc_record->insert_fields_ordered(
+                        MARC::Field->new($tag, '', '', $code => $formatted_identifier),
+                    );
+                    $self->save_marc_record($type, $id, $marc_record);
+                    $self->job_log($job, "Identifiant ajouté pour la notice $id (ligne $linenumber)");
+                    $updated++;
+                } else {
+                    $self->job_log($job, "Format d'identifiant non reconnu : $external_id");
+                }
             }
         } else {
-            $self->job_log($job, "Record not found for id $id (line $linenumber)");
+            $self->job_log($job, "Notice $id introuvable (ligne $linenumber)");
+            $notfound++;
         }
+
+        $processed++;
     }
+
+    $self->job_log($job, "Résumé:");
+    $self->job_log($job, "    Notices traitées: $processed");
+    $self->job_log($job, "    Notices mises à jour: $updated");
+    $self->job_log($job, "    Notices non mises à jour: " . ($processed - $updated));
+    $self->job_log($job, "    Notices avec identifiant déjà présent: $already_uptodate");
+    $self->job_log($job, "    Notices non trouvées: $notfound");
 
     $self->finish_job($job);
 }
@@ -585,6 +612,9 @@ sub save_marc_record {
 sub clean_identifier {
     my ($self, $identifier) = @_;
 
+    $identifier =~ s/^\s+//;
+    $identifier =~ s/\s+$//;
+
     if ($identifier =~ /^http:/) {
         my $uri = URI->new($identifier);
         $identifier = $uri->path;
@@ -594,6 +624,26 @@ sub clean_identifier {
     $identifier =~ s/^PPN//;
 
     return $identifier;
+}
+
+sub format_identifier {
+    my ($self, $identifier, $format) = @_;
+
+    return $identifier unless $format;
+
+    if ($format eq 'clean') {
+        return $self->clean_identifier($identifier);
+    }
+
+    if ($format eq 'uri') {
+        my $clean_identifier = $self->clean_identifier($identifier);
+        if ($clean_identifier =~ /^ark:/) {
+            return 'https://catalogue.bnf.fr/' . $clean_identifier;
+        }
+        if ($clean_identifier =~ /^\d{9}$/) {
+            return 'http://www.sudoc.fr/' . $clean_identifier;
+        }
+    }
 }
 
 sub get_marc_record {
