@@ -660,4 +660,35 @@ sub get_marc_record {
     return $marc_record;
 };
 
+sub purge {
+    my ($self, $older_than) = @_;
+
+    my $dbh = C4::Context->dbh;
+    my $jobs_table = $self->get_qualified_table_name('jobs');
+    my $jobs = $dbh->selectall_arrayref(qq{
+        SELECT * FROM $jobs_table
+        WHERE state = 'finished'
+          AND finished_at < DATE_SUB(CURRENT_TIMESTAMP, INTERVAL ? DAY)
+        ORDER BY enqueued_at ASC
+    }, { Slice => {} }, $older_than);
+
+    my $delete_sth = $dbh->prepare(qq{
+        DELETE FROM $jobs_table
+        WHERE id = ?
+    });
+
+    foreach my $job (@$jobs) {
+        say STDERR "Removing job " . $job->{id};
+
+        $job->{args} = decode_json($job->{args});
+        my $filepath = $job->{args}->{filepath};
+
+        say STDERR "Removing file $filepath";
+        unlink $filepath or say STDERR "Could not unlink file $filepath: $!";
+
+        say STDERR "Removing database entry";
+        $delete_sth->execute($job->{id}) or say STDERR "Could not remove database entry: " . $delete_sth->errstr;
+    }
+}
+
 1;
