@@ -24,7 +24,7 @@
 
             <form method="post" action="/cgi-bin/koha/plugins/run.pl">
                 <div class="form-group">
-                    <label for="file">Fichier</label>
+                    <label for="file">Fichiers disponibles pour traitement</label>
                     <select class="form-control" id="file" name="file" required>
                         <option value="">Sélectionnez un fichier</option>
                         [% FOREACH file IN files %]
@@ -51,7 +51,7 @@
 
                 <div class="form-group">
                     [% formats = ['CSV', 'TSV', 'JSON', 'MARC'] %]
-                    <label for="format">Format</label>
+                    <label for="format">Format d'export</label>
                     <select class="form-control" id="format" name="format">
                         [% FOREACH format IN formats %]
                             [% selected = (CGI.param('format') == format) %]
