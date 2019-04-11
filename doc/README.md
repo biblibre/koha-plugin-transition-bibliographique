@@ -9,7 +9,7 @@ Bibliostratus est identifié dans la transition bibliographique comme étant le 
 Il serait possible de travailler uniquement avec le vendangeur développé par BibLibre, cependant le processus et les résultats ne sont pas les mêmes. Une fois les données dans Koha, il sera temps de mettre en valeur ces données liées dans le catalogue. L'idée est de rendre autonome un maximum les utilisateurs Koha intéressés notamment par Bibliostratus.
 
 Ce plugin est découpé en deux parties:
-* Export des données du catalogue avec des règles spécifiques Catmandu
+* [Export des données du catalogue](export.pm) avec des règles spécifiques Catmandu
 * Import des identifiants dans votre catalogue Koha
 
 <IMG accueil du plugin>
