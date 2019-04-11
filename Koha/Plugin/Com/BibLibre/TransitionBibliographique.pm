@@ -22,7 +22,7 @@ use Koha::Authorities;
 use Koha::Authority;
 use Koha::Database;
 
-our $VERSION = "0.1.0";
+our $VERSION = "0.2.0";
 
 our $metadata = {
     name            => 'Transition bibliographique',
