@@ -11,7 +11,13 @@
 <div class="main container-fluid">
     <div class="row">
         <div class="col-sm-10 col-sm-push-2">
-            <p>Coucou, il faut cliquer sur les liens à gauche</p>
+        <h2>Plugin Koha "Transition bibliographique"</h2>
+            <p>
+            Le plugin Koha "Transition bibliographique" est un module optionnel qui peut être ajouté à Koha afin de faciliter l'alignement du catalogue Koha avec les réservoirs nationaux. Une fois les identifiants intégrés comme les clés ARK, les outils de type moissonneur (comme le vendangeur) pourront mettre à jour les notices en se basant sur ces clés.
+            </p>
+            <p>
+            Vous pouvez en savoir plus en consultant <a href="https://github.com/biblibre/koha-plugin-transition-bibliographique/blob/master/doc/README.md">la documentation du plugin</a>.
+            </p>
         </div>
         <div class="col-sm-2 col-sm-pull-10">
             <ul>
