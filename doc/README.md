@@ -10,9 +10,9 @@ Il serait possible de travailler uniquement avec le vendangeur développé par B
 
 Ce plugin est découpé en deux parties:
 * [Export des données du catalogue](export.md) avec des règles spécifiques Catmandu
-* Import des identifiants dans votre catalogue Koha
+* [Import des identifiants](import.md) dans votre catalogue Koha
 
-<IMG accueil du plugin>
+![Plugin - outil d'export](images/koha-plugins.png)
 
 Ce plugin a été initiallement commandé par l'association [Kohala](http://koha-fr.org/) et développé par [BibLibre](http://biblibre.com/). Il est sous [licence libre]().
 
