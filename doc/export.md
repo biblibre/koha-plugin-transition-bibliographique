@@ -1,6 +1,6 @@
 ## Export des données du catalogue
 
-<IMG écran d'accueil du module d'export>
+![Plugin - outil d'export](images/koha-plugin-tb-export.png)
 
 ### Fichiers disponibles pour traitement
 
