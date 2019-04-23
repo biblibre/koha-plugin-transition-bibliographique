@@ -33,6 +33,11 @@ Vous trouverez dans chaque "fix" sa documentation dans le [fichier associé](../
 
 Le processus est lancé à la volée. Pour les plus gros catalogues, il faudra peut être envisager une mise en background de la tache. Cette option n'est pas incluse dans la version 0.0.2.
 
+Zoom sur "Modifié entre A et B":
+* Dans Koha, les dates de modification des notices ne sont pas dans les données de catalogue MARC par défaut. Vous devez paramétrer
+ un script qui va copier ces dates dans le MARC.
+* /home/koha/src/misc/maintenance/UNIMARC_sync_date_created_with_marc_biblio.pl [Documentation](https://doc.biblibre.com/koha/recherche/zebra/tri_resultats_recherche#tri_par_date_d_acquisition)
+
 ## Format
 
 Vous pouvez télécharger les formats suivants:
