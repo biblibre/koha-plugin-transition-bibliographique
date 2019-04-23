@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US">
+<!-- git web interface version 1.7.10.4, (C) 2005-2006, Kay Sievers <kay.sievers@vrfy.org>, Christian Gierke -->
+<!-- git core binaries version 1.7.10.4 -->
+<head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+<meta name="generator" content="gitweb/1.7.10.4 git/1.7.10.4"/>
+<meta name="robots" content="index, nofollow"/>
+<title>git.koha-community.org Git - koha.git/summary</title>
+<link rel="stylesheet" type="text/css" href="/gitweb/gitweb.css"/>
+<link rel="alternate" title="koha.git - log - RSS feed" href="/gitweb/?p=koha.git;a=rss" type="application/rss+xml" />
+<link rel="alternate" title="koha.git - log - RSS feed (no merges)" href="/gitweb/?p=koha.git;a=rss;opt=--no-merges" type="application/rss+xml" />
+<link rel="alternate" title="koha.git - log - Atom feed" href="/gitweb/?p=koha.git;a=atom;opt=--no-merges" type="application/atom+xml" />
+<link rel="alternate" title="koha.git - log - Atom feed (no merges)" href="/gitweb/?p=koha.git;a=atom;opt=--no-merges" type="application/atom+xml" />
+<link rel="shortcut icon" href="/gitweb/git-favicon.png" type="image/png" />
+</head>
+<body>
+<div class="page_header">
+<a title="Koha homepage" href="http://koha-community.org/"><img class="logo" height="27" src="/gitweb/Koha-logo.jpg" alt="git" width="72" /></a><a href="/gitweb/">projects</a> / <a href="/gitweb/?p=koha.git;a=summary">koha.git</a> / summary
+</div>
+<form method="get" action="/gitweb/" enctype="application/x-www-form-urlencoded">
+<div class="search">
+<input name="p" type="hidden" value="koha.git" />
+<input name="a" type="hidden" value="search" />
+<input name="h" type="hidden" value="HEAD" />
+<select name="st" >
+<option selected="selected" value="commit">commit</option>
+<option value="grep">grep</option>
+<option value="author">author</option>
+<option value="committer">committer</option>
+<option value="pickaxe">pickaxe</option>
+</select><sup><a href="/gitweb/?p=koha.git;a=search_help">?</a></sup> search:
+<input type="text" name="s"  />
+<span title="Extended regular expression"><label><input type="checkbox" name="sr" value="1" />re</label></span></div>
+</form>
+<div class="page_nav">
+summary | <a href="/gitweb/?p=koha.git;a=shortlog">shortlog</a> | <a href="/gitweb/?p=koha.git;a=log">log</a> | <a href="/gitweb/?p=koha.git;a=commit;h=3d840153d1e9736f126b04b96eea4367d096996b">commit</a> | <a href="/gitweb/?p=koha.git;a=commitdiff;h=3d840153d1e9736f126b04b96eea4367d096996b">commitdiff</a> | <a href="/gitweb/?p=koha.git;a=tree">tree</a><br/>
+<br/>
+</div>
+<div class="title">&nbsp;</div>
+<table class="projects_list">
+<tr id="metadata_desc"><td>description</td><td>main Koha release repository</td></tr>
+<tr id="metadata_owner"><td>owner</td><td>Koha Project</td></tr>
+<tr id="metadata_lchange"><td>last change</td><td><span class="datetime">Fri, 19 Apr 2019 14:51:08 +0000</span> (14:51 +0000)</td></tr>
+<tr class="metadata_url"><td>URL</td><td>git://git.koha-community.org/koha.git</td></tr>
+</table>
+<div class="header">
+<a class="title" href="/gitweb/?p=koha.git;a=shortlog">shortlog</a>
+</div>
+<table class="shortlog">
+<tr class="dark">
+<td title="2019-04-19"><i>3 days ago</i></td>
+<td class="author"><a title="Search for commits authored by Nick Clemens" class="list" href="/gitweb/?p=koha.git;a=search;s=Nick+Clemens;st=author">Nick Clemens</a></td><td><a class="list subject" href="/gitweb/?p=koha.git;a=commit;h=3d840153d1e9736f126b04b96eea4367d096996b">Bug 22564: DBRev 18.12.00.060</a> <span class="refs"> <span class="head" title="heads/master"><a href="/gitweb/?p=koha.git;a=shortlog;h=refs/heads/master">master</a></span></span></td>
+<td class="link"><a href="/gitweb/?p=koha.git;a=commit;h=3d840153d1e9736f126b04b96eea4367d096996b">commit</a> | <a href="/gitweb/?p=koha.git;a=commitdiff;h=3d840153d1e9736f126b04b96eea4367d096996b">commitdiff</a> | <a href="/gitweb/?p=koha.git;a=tree;h=3d840153d1e9736f126b04b96eea4367d096996b;hb=3d840153d1e9736f126b04b96eea4367d096996b">tree</a></td>
+</tr>
+<tr class="light">
+<td title="2019-04-19"><i>3 days ago</i></td>
+<td class="author"><a title="Search for commits authored by Marcel de Rooy" class="list" href="/gitweb/?p=koha.git;a=search;s=Marcel+de+Rooy;st=author">Marcel de Rooy</a></td><td><a class="list subject" href="/gitweb/?p=koha.git;a=commit;h=7b7a2767c826abcb507a5fe2466ecbdcea6f9d2c">Bug 22564: (QA follow-up) Correct copy-paste message</a></td>
+<td class="link"><a href="/gitweb/?p=koha.git;a=commit;h=7b7a2767c826abcb507a5fe2466ecbdcea6f9d2c">commit</a> | <a href="/gitweb/?p=koha.git;a=commitdiff;h=7b7a2767c826abcb507a5fe2466ecbdcea6f9d2c">commitdiff</a> | <a href="/gitweb/?p=koha.git;a=tree;h=7b7a2767c826abcb507a5fe2466ecbdcea6f9d2c;hb=7b7a2767c826abcb507a5fe2466ecbdcea6f9d2c">tree</a></td>
+</tr>
+<tr class="dark">
+<td title="2019-04-19"><i>3 days ago</i></td>
+<td class="author"><a title="Search for commits authored by Martin Renvoize" class="list" href="/gitweb/?p=koha.git;a=search;s=Martin+Renvoize;st=author">Martin Renvoize</a></td><td><a class="list subject" href="/gitweb/?p=koha.git;a=commit;h=99cd771b09a6462381001ab98f7d833ca247c439">Bug 22564: Add UI handling for 'Replaced'</a></td>
+<td class="link"><a href="/gitweb/?p=koha.git;a=commit;h=99cd771b09a6462381001ab98f7d833ca247c439">commit</a> | <a href="/gitweb/?p=koha.git;a=commitdiff;h=99cd771b09a6462381001ab98f7d833ca247c439">commitdiff</a> | <a href="/gitweb/?p=koha.git;a=tree;h=99cd771b09a6462381001ab98f7d833ca247c439;hb=99cd771b09a6462381001ab98f7d833ca247c439">tree</a></td>
+</tr>
+<tr class="light">
+<td title="2019-04-19"><i>3 days ago</i></td>
+<td class="author"><a title="Search for commits authored by Martin Renvoize" class="list" href="/gitweb/?p=koha.git;a=search;s=Martin+Renvoize;st=author">Martin Renvoize</a></td><td><a class="list subject" href="/gitweb/?p=koha.git;a=commit;h=d8dfb61a9099cd9c07b22bf1d5a4cc2a834f2fc6">Bug 22564: Add database update 'just in case'</a></td>
+<td class="link"><a href="/gitweb/?p=koha.git;a=commit;h=d8dfb61a9099cd9c07b22bf1d5a4cc2a834f2fc6">commit</a> | <a href="/gitweb/?p=koha.git;a=commitdiff;h=d8dfb61a9099cd9c07b22bf1d5a4cc2a834f2fc6">commitdiff</a> | <a href="/gitweb/?p=koha.git;a=tree;h=d8dfb61a9099cd9c07b22bf1d5a4cc2a834f2fc6;hb=d8dfb61a9099cd9c07b22bf1d5a4cc2a834f2fc6">tree</a></td>
+</tr>
+<tr class="dark">
+<td title="2019-04-19"><i>3 days ago</i></td>
+<td class="author"><a title="Search for commits authored by Martin Renvoize" class="list" href="/gitweb/?p=koha.git;a=search;s=Martin+Renvoize;st=author">Martin Renvoize</a></td><td><a class="list subject" href="/gitweb/?p=koha.git;a=commit;h=b3de8738b7f8db23c99b588a11da2225bd67106c">Bug 22564: Remove references to 'Rep' accounttype</a></td>
+<td class="link"><a href="/gitweb/?p=koha.git;a=commit;h=b3de8738b7f8db23c99b588a11da2225bd67106c">commit</a> | <a href="/gitweb/?p=koha.git;a=commitdiff;h=b3de8738b7f8db23c99b588a11da2225bd67106c">commitdiff</a> | <a href="/gitweb/?p=koha.git;a=tree;h=b3de8738b7f8db23c99b588a11da2225bd67106c;hb=b3de8738b7f8db23c99b588a11da2225bd67106c">tree</a></td>
+</tr>
+<tr class="light">
+<td title="2019-04-19"><i>3 days ago</i></td>
+<td class="author"><a title="Search for commits authored by Andrew Isherwood" class="list" href="/gitweb/?p=koha.git;a=search;s=Andrew+Isherwood;st=author">Andrew Isherwood</a></td><td><a class="list subject" href="/gitweb/?p=koha.git;a=commit;h=5e20e438e80465fcd6f1c2af5e6138a639dec5f3">Bug 22464: Pass forward parameters</a></td>
+<td class="link"><a href="/gitweb/?p=koha.git;a=commit;h=5e20e438e80465fcd6f1c2af5e6138a639dec5f3">commit</a> | <a href="/gitweb/?p=koha.git;a=commitdiff;h=5e20e438e80465fcd6f1c2af5e6138a639dec5f3">commitdiff</a> | <a href="/gitweb/?p=koha.git;a=tree;h=5e20e438e80465fcd6f1c2af5e6138a639dec5f3;hb=5e20e438e80465fcd6f1c2af5e6138a639dec5f3">tree</a></td>
+</tr>
+<tr class="dark">
+<td title="2019-04-19"><i>3 days ago</i></td>
+<td class="author"><a title="Search for commits authored by Owen Leonard" class="list" href="/gitweb/?p=koha.git;a=search;s=Owen+Leonard;st=author">Owen Leonard</a></td><td><a class="list subject" href="/gitweb/?p=koha.git;a=commit;h=646e9fe3009b38694bc109611506932a3008932b">Bug 21783: Reindent admin/columns_settings.tt</a></td>
+<td class="link"><a href="/gitweb/?p=koha.git;a=commit;h=646e9fe3009b38694bc109611506932a3008932b">commit</a> | <a href="/gitweb/?p=koha.git;a=commitdiff;h=646e9fe3009b38694bc109611506932a3008932b">commitdiff</a> | <a href="/gitweb/?p=koha.git;a=tree;h=646e9fe3009b38694bc109611506932a3008932b;hb=646e9fe3009b38694bc109611506932a3008932b">tree</a></td>
+</tr>
+<tr class="light">
+<td title="2019-04-19"><i>3 days ago</i></td>
+<td class="author"><a title="Search for commits authored by Martin Renvoize" class="list" href="/gitweb/?p=koha.git;a=search;s=Martin+Renvoize;st=author">Martin Renvoize</a></td><td><a class="list subject" href="/gitweb/?p=koha.git;a=commit;h=38d68299ce7405823c50a6a41ac0f5d18b0b9044">Bug 22687: Typo correction for Portuguese manual link</a></td>
+<td class="link"><a href="/gitweb/?p=koha.git;a=commit;h=38d68299ce7405823c50a6a41ac0f5d18b0b9044">commit</a> | <a href="/gitweb/?p=koha.git;a=commitdiff;h=38d68299ce7405823c50a6a41ac0f5d18b0b9044">commitdiff</a> | <a href="/gitweb/?p=koha.git;a=tree;h=38d68299ce7405823c50a6a41ac0f5d18b0b9044;hb=38d68299ce7405823c50a6a41ac0f5d18b0b9044">tree</a></td>
+</tr>
+<tr class="dark">
+<td title="2019-04-19"><i>3 days ago</i></td>
+<td class="author"><a title="Search for commits authored by Nick Clemens" class="list" href="/gitweb/?p=koha.git;a=search;s=Nick+Clemens;st=author">Nick Clemens</a></td><td><a class="list subject" title="Bug 16149: Generate and send custom notices based on report output" href="/gitweb/?p=koha.git;a=commit;h=0bbebced9dd463444cb1d91a60bcf4323e5a721e">Bug 16149: Generate and send custom notices based on... </a></td>
+<td class="link"><a href="/gitweb/?p=koha.git;a=commit;h=0bbebced9dd463444cb1d91a60bcf4323e5a721e">commit</a> | <a href="/gitweb/?p=koha.git;a=commitdiff;h=0bbebced9dd463444cb1d91a60bcf4323e5a721e">commitdiff</a> | <a href="/gitweb/?p=koha.git;a=tree;h=0bbebced9dd463444cb1d91a60bcf4323e5a721e;hb=0bbebced9dd463444cb1d91a60bcf4323e5a721e">tree</a></td>
+</tr>
+<tr class="light">
+<td title="2019-04-19"><i>3 days ago</i></td>
+<td class="author"><a title="Search for commits authored by Nick Clemens" class="list" href="/gitweb/?p=koha.git;a=search;s=Nick+Clemens;st=author">Nick Clemens</a></td><td><a class="list subject" href="/gitweb/?p=koha.git;a=commit;h=f751423d155d25b1ba80b4c429191389b46b6bcb">Bug 16149: Unit tests</a></td>
+<td class="link"><a href="/gitweb/?p=koha.git;a=commit;h=f751423d155d25b1ba80b4c429191389b46b6bcb">commit</a> | <a href="/gitweb/?p=koha.git;a=commitdiff;h=f751423d155d25b1ba80b4c429191389b46b6bcb">commitdiff</a> | <a href="/gitweb/?p=koha.git;a=tree;h=f751423d155d25b1ba80b4c429191389b46b6bcb;hb=f751423d155d25b1ba80b4c429191389b46b6bcb">tree</a></td>
+</tr>
+<tr class="dark">
+<td title="2019-04-19"><i>3 days ago</i></td>
+<td class="author"><a title="Search for commits authored by Katrin Fischer" class="list" href="/gitweb/?p=koha.git;a=search;s=Katrin+Fischer;st=author">Katrin Fischer</a></td><td><a class="list subject" title="Bug 22649: Add itemtype to item search results and CSV file" href="/gitweb/?p=koha.git;a=commit;h=ac6dc3b2c12cf16464e8676f4e2da6ec99e34e70">Bug 22649: Add itemtype to item search results and... </a></td>
+<td class="link"><a href="/gitweb/?p=koha.git;a=commit;h=ac6dc3b2c12cf16464e8676f4e2da6ec99e34e70">commit</a> | <a href="/gitweb/?p=koha.git;a=commitdiff;h=ac6dc3b2c12cf16464e8676f4e2da6ec99e34e70">commitdiff</a> | <a href="/gitweb/?p=koha.git;a=tree;h=ac6dc3b2c12cf16464e8676f4e2da6ec99e34e70;hb=ac6dc3b2c12cf16464e8676f4e2da6ec99e34e70">tree</a></td>
+</tr>
+<tr class="light">
+<td title="2019-04-19"><i>3 days ago</i></td>
+<td class="author"><a title="Search for commits authored by Katrin Fischer" class="list" href="/gitweb/?p=koha.git;a=search;s=Katrin+Fischer;st=author">Katrin Fischer</a></td><td><a class="list subject" href="/gitweb/?p=koha.git;a=commit;h=b969ccbf97c218da2bf6e22ab7773baf36c4fa71">Bug 22174: Add link to help page for API key management</a></td>
+<td class="link"><a href="/gitweb/?p=koha.git;a=commit;h=b969ccbf97c218da2bf6e22ab7773baf36c4fa71">commit</a> | <a href="/gitweb/?p=koha.git;a=commitdiff;h=b969ccbf97c218da2bf6e22ab7773baf36c4fa71">commitdiff</a> | <a href="/gitweb/?p=koha.git;a=tree;h=b969ccbf97c218da2bf6e22ab7773baf36c4fa71;hb=b969ccbf97c218da2bf6e22ab7773baf36c4fa71">tree</a></td>
+</tr>
+<tr class="dark">
+<td title="2019-04-19"><i>3 days ago</i></td>
+<td class="author"><a title="Search for commits authored by Frédéric Demians" class="list" href="/gitweb/?p=koha.git;a=search;s=Fr%C3%A9d%C3%A9ric+Demians;st=author">Frédéric Demians</a></td><td><a class="list subject" title="Bug 21937: Syspref autoBarcode annual doesn't increment properly barcode" href="/gitweb/?p=koha.git;a=commit;h=31ace6a9347a8260532f6cc50d55fc36f87f1b44">Bug 21937: Syspref autoBarcode annual doesn't increment... </a></td>
+<td class="link"><a href="/gitweb/?p=koha.git;a=commit;h=31ace6a9347a8260532f6cc50d55fc36f87f1b44">commit</a> | <a href="/gitweb/?p=koha.git;a=commitdiff;h=31ace6a9347a8260532f6cc50d55fc36f87f1b44">commitdiff</a> | <a href="/gitweb/?p=koha.git;a=tree;h=31ace6a9347a8260532f6cc50d55fc36f87f1b44;hb=31ace6a9347a8260532f6cc50d55fc36f87f1b44">tree</a></td>
+</tr>
+<tr class="light">
+<td title="2019-04-19"><i>3 days ago</i></td>
+<td class="author"><a title="Search for commits authored by Frédéric Demians" class="list" href="/gitweb/?p=koha.git;a=search;s=Fr%C3%A9d%C3%A9ric+Demians;st=author">Frédéric Demians</a></td><td><a class="list subject" title="Bug 21937: Add test to show autoBarcode annual increment bug" href="/gitweb/?p=koha.git;a=commit;h=7262bc066784247b12ce7f25c390498086e1d72b">Bug 21937: Add test to show autoBarcode annual incremen... </a></td>
+<td class="link"><a href="/gitweb/?p=koha.git;a=commit;h=7262bc066784247b12ce7f25c390498086e1d72b">commit</a> | <a href="/gitweb/?p=koha.git;a=commitdiff;h=7262bc066784247b12ce7f25c390498086e1d72b">commitdiff</a> | <a href="/gitweb/?p=koha.git;a=tree;h=7262bc066784247b12ce7f25c390498086e1d72b;hb=7262bc066784247b12ce7f25c390498086e1d72b">tree</a></td>
+</tr>
+<tr class="dark">
+<td title="2019-04-19"><i>3 days ago</i></td>
+<td class="author"><a title="Search for commits authored by Nick Clemens" class="list" href="/gitweb/?p=koha.git;a=search;s=Nick+Clemens;st=author">Nick Clemens</a></td><td><a class="list subject" href="/gitweb/?p=koha.git;a=commit;h=170085397b23d9b688628a56039f5e485fade6a5">Bug 15505: Mark Hold Items 'On hold' instead of 'Available'</a></td>
+<td class="link"><a href="/gitweb/?p=koha.git;a=commit;h=170085397b23d9b688628a56039f5e485fade6a5">commit</a> | <a href="/gitweb/?p=koha.git;a=commitdiff;h=170085397b23d9b688628a56039f5e485fade6a5">commitdiff</a> | <a href="/gitweb/?p=koha.git;a=tree;h=170085397b23d9b688628a56039f5e485fade6a5;hb=170085397b23d9b688628a56039f5e485fade6a5">tree</a></td>
+</tr>
+<tr class="light">
+<td title="2019-04-19"><i>3 days ago</i></td>
+<td class="author"><a title="Search for commits authored by Owen Leonard" class="list" href="/gitweb/?p=koha.git;a=search;s=Owen+Leonard;st=author">Owen Leonard</a></td><td><a class="list subject" href="/gitweb/?p=koha.git;a=commit;h=4f14f7c7af13a7ee29c68302bad1ff8ac12c7fdf">Bug 21307: (follow-up) QA fixes</a></td>
+<td class="link"><a href="/gitweb/?p=koha.git;a=commit;h=4f14f7c7af13a7ee29c68302bad1ff8ac12c7fdf">commit</a> | <a href="/gitweb/?p=koha.git;a=commitdiff;h=4f14f7c7af13a7ee29c68302bad1ff8ac12c7fdf">commitdiff</a> | <a href="/gitweb/?p=koha.git;a=tree;h=4f14f7c7af13a7ee29c68302bad1ff8ac12c7fdf;hb=4f14f7c7af13a7ee29c68302bad1ff8ac12c7fdf">tree</a></td>
+</tr>
+<tr>
+<td colspan="4"><a href="/gitweb/?p=koha.git;a=shortlog">...</a></td>
+</tr>
+</table>
+<div class="header">
+<a class="title" href="/gitweb/?p=koha.git;a=tags">tags</a>
+</div>
+<table class="tags">
+<tr class="dark">
+<td><i>4 weeks ago</i></td>
+<td><a class="list name" href="/gitweb/?p=koha.git;a=commit;h=a54244ace48b2f124d4183355e430faeb0e0e35b">v17.11.17</a></td>
+<td><a class="list subject" href="/gitweb/?p=koha.git;a=tag;h=b2acea2ef6cd5feb28518cf4d9379b3d1f058575">Koha release 17.11.17</a></td>
+<td class="selflink"><a href="/gitweb/?p=koha.git;a=tag;h=b2acea2ef6cd5feb28518cf4d9379b3d1f058575">tag</a></td>
+<td class="link"> | <a href="/gitweb/?p=koha.git;a=commit;h=a54244ace48b2f124d4183355e430faeb0e0e35b">commit</a> | <a href="/gitweb/?p=koha.git;a=shortlog;h=refs/tags/v17.11.17">shortlog</a> | <a href="/gitweb/?p=koha.git;a=log;h=refs/tags/v17.11.17">log</a></td>
+</tr><tr class="light">
+<td><i>4 weeks ago</i></td>
+<td><a class="list name" href="/gitweb/?p=koha.git;a=commit;h=319ef905cdb6724e605fab0365580248b9c3c61c">v18.11.04</a></td>
+<td><a class="list subject" href="/gitweb/?p=koha.git;a=tag;h=4e80f9a0c321902f6570695ea6230fd65b9b2475">Koha release 18.11.04</a></td>
+<td class="selflink"><a href="/gitweb/?p=koha.git;a=tag;h=4e80f9a0c321902f6570695ea6230fd65b9b2475">tag</a></td>
+<td class="link"> | <a href="/gitweb/?p=koha.git;a=commit;h=319ef905cdb6724e605fab0365580248b9c3c61c">commit</a> | <a href="/gitweb/?p=koha.git;a=shortlog;h=refs/tags/v18.11.04">shortlog</a> | <a href="/gitweb/?p=koha.git;a=log;h=refs/tags/v18.11.04">log</a></td>
+</tr><tr class="dark">
+<td><i>4 weeks ago</i></td>
+<td><a class="list name" href="/gitweb/?p=koha.git;a=commit;h=ccf4c4e3fe10bedae9de88cca45629e4aace1807">v18.05.11</a></td>
+<td><a class="list subject" href="/gitweb/?p=koha.git;a=tag;h=c209125ab7b787a38621932f1cc8db38ac620c52">Koha release 18.05.11</a></td>
+<td class="selflink"><a href="/gitweb/?p=koha.git;a=tag;h=c209125ab7b787a38621932f1cc8db38ac620c52">tag</a></td>
+<td class="link"> | <a href="/gitweb/?p=koha.git;a=commit;h=ccf4c4e3fe10bedae9de88cca45629e4aace1807">commit</a> | <a href="/gitweb/?p=koha.git;a=shortlog;h=refs/tags/v18.05.11">shortlog</a> | <a href="/gitweb/?p=koha.git;a=log;h=refs/tags/v18.05.11">log</a></td>
+</tr><tr class="light">
+<td><i>7 weeks ago</i></td>
+<td><a class="list name" href="/gitweb/?p=koha.git;a=commit;h=1fc4721ec2a90246f2bdd019ae9573a145009546">v18.05.10</a></td>
+<td><a class="list subject" href="/gitweb/?p=koha.git;a=tag;h=bd3690fb54bbd90a300938246bb539f7b8425ad4">Koha release 18.05.10</a></td>
+<td class="selflink"><a href="/gitweb/?p=koha.git;a=tag;h=bd3690fb54bbd90a300938246bb539f7b8425ad4">tag</a></td>
+<td class="link"> | <a href="/gitweb/?p=koha.git;a=commit;h=1fc4721ec2a90246f2bdd019ae9573a145009546">commit</a> | <a href="/gitweb/?p=koha.git;a=shortlog;h=refs/tags/v18.05.10">shortlog</a> | <a href="/gitweb/?p=koha.git;a=log;h=refs/tags/v18.05.10">log</a></td>
+</tr><tr class="dark">
+<td><i>7 weeks ago</i></td>
+<td><a class="list name" href="/gitweb/?p=koha.git;a=commit;h=b561c2dbd3321374b5f26a66ef90ecb47e5371f9">v17.11.16</a></td>
+<td><a class="list subject" href="/gitweb/?p=koha.git;a=tag;h=5fdbe40ee79440a5b6c70a6793ff7e5ee353f907">Koha release 17.11.16</a></td>
+<td class="selflink"><a href="/gitweb/?p=koha.git;a=tag;h=5fdbe40ee79440a5b6c70a6793ff7e5ee353f907">tag</a></td>
+<td class="link"> | <a href="/gitweb/?p=koha.git;a=commit;h=b561c2dbd3321374b5f26a66ef90ecb47e5371f9">commit</a> | <a href="/gitweb/?p=koha.git;a=shortlog;h=refs/tags/v17.11.16">shortlog</a> | <a href="/gitweb/?p=koha.git;a=log;h=refs/tags/v17.11.16">log</a></td>
+</tr><tr class="light">
+<td><i>8 weeks ago</i></td>
+<td><a class="list name" href="/gitweb/?p=koha.git;a=commit;h=3a19cfad18d0acdb67722de134ff53525599a645">v17.11.15</a></td>
+<td><a class="list subject" href="/gitweb/?p=koha.git;a=tag;h=0fdd98e5eb16a732d49e3a9ff9739f19e2672da1">Koha release 17.11.15</a></td>
+<td class="selflink"><a href="/gitweb/?p=koha.git;a=tag;h=0fdd98e5eb16a732d49e3a9ff9739f19e2672da1">tag</a></td>
+<td class="link"> | <a href="/gitweb/?p=koha.git;a=commit;h=3a19cfad18d0acdb67722de134ff53525599a645">commit</a> | <a href="/gitweb/?p=koha.git;a=shortlog;h=refs/tags/v17.11.15">shortlog</a> | <a href="/gitweb/?p=koha.git;a=log;h=refs/tags/v17.11.15">log</a></td>
+</tr><tr class="dark">
+<td><i>8 weeks ago</i></td>
+<td><a class="list name" href="/gitweb/?p=koha.git;a=commit;h=d5ae145499f36c5cd459d4eaec3ec1f007a3b314">v18.11.03</a></td>
+<td><a class="list subject" href="/gitweb/?p=koha.git;a=tag;h=c83e2b943c9aa10fb3f1d39f98d8e7454273ae17">Koha release 18.11.03</a></td>
+<td class="selflink"><a href="/gitweb/?p=koha.git;a=tag;h=c83e2b943c9aa10fb3f1d39f98d8e7454273ae17">tag</a></td>
+<td class="link"> | <a href="/gitweb/?p=koha.git;a=commit;h=d5ae145499f36c5cd459d4eaec3ec1f007a3b314">commit</a> | <a href="/gitweb/?p=koha.git;a=shortlog;h=refs/tags/v18.11.03">shortlog</a> | <a href="/gitweb/?p=koha.git;a=log;h=refs/tags/v18.11.03">log</a></td>
+</tr><tr class="light">
+<td><i>8 weeks ago</i></td>
+<td><a class="list name" href="/gitweb/?p=koha.git;a=commit;h=964ce524640f0dc1129ac2edc96b01af8c638adf">v18.05.09</a></td>
+<td><a class="list subject" href="/gitweb/?p=koha.git;a=tag;h=73985083f90a2f3eb7d231c35455087c98f0d148">Koha release 18.05.09</a></td>
+<td class="selflink"><a href="/gitweb/?p=koha.git;a=tag;h=73985083f90a2f3eb7d231c35455087c98f0d148">tag</a></td>
+<td class="link"> | <a href="/gitweb/?p=koha.git;a=commit;h=964ce524640f0dc1129ac2edc96b01af8c638adf">commit</a> | <a href="/gitweb/?p=koha.git;a=shortlog;h=refs/tags/v18.05.09">shortlog</a> | <a href="/gitweb/?p=koha.git;a=log;h=refs/tags/v18.05.09">log</a></td>
+</tr><tr class="dark">
+<td><i>2 months ago</i></td>
+<td><a class="list name" href="/gitweb/?p=koha.git;a=commit;h=34ddd742f92ae8e0525b7788f30eb4bc88e355c3">v18.05.08</a></td>
+<td><a class="list subject" href="/gitweb/?p=koha.git;a=tag;h=812a1eae0df9bf56eca501a5f8000d72c3ece6ed">Koha release 18.05.08</a></td>
+<td class="selflink"><a href="/gitweb/?p=koha.git;a=tag;h=812a1eae0df9bf56eca501a5f8000d72c3ece6ed">tag</a></td>
+<td class="link"> | <a href="/gitweb/?p=koha.git;a=commit;h=34ddd742f92ae8e0525b7788f30eb4bc88e355c3">commit</a> | <a href="/gitweb/?p=koha.git;a=shortlog;h=refs/tags/v18.05.08">shortlog</a> | <a href="/gitweb/?p=koha.git;a=log;h=refs/tags/v18.05.08">log</a></td>
+</tr><tr class="light">
+<td><i>2 months ago</i></td>
+<td><a class="list name" href="/gitweb/?p=koha.git;a=commit;h=15db01f66e920cefe62b402cd46d66c3f1101a13">v18.11.02</a></td>
+<td><a class="list subject" href="/gitweb/?p=koha.git;a=tag;h=698310a1e1d0b4ea397a4cc653982d7ab7a6d2ce">Koha release 18.11.02</a></td>
+<td class="selflink"><a href="/gitweb/?p=koha.git;a=tag;h=698310a1e1d0b4ea397a4cc653982d7ab7a6d2ce">tag</a></td>
+<td class="link"> | <a href="/gitweb/?p=koha.git;a=commit;h=15db01f66e920cefe62b402cd46d66c3f1101a13">commit</a> | <a href="/gitweb/?p=koha.git;a=shortlog;h=refs/tags/v18.11.02">shortlog</a> | <a href="/gitweb/?p=koha.git;a=log;h=refs/tags/v18.11.02">log</a></td>
+</tr><tr class="dark">
+<td><i>2 months ago</i></td>
+<td><a class="list name" href="/gitweb/?p=koha.git;a=commit;h=577d559b38b95c1ed4d7d302e8f83c636214b5ca">v17.11.14</a></td>
+<td><a class="list subject" href="/gitweb/?p=koha.git;a=tag;h=6c24976eb2d59069e84efcda4f7a7c100a390ea4">Koha release 17.11.14</a></td>
+<td class="selflink"><a href="/gitweb/?p=koha.git;a=tag;h=6c24976eb2d59069e84efcda4f7a7c100a390ea4">tag</a></td>
+<td class="link"> | <a href="/gitweb/?p=koha.git;a=commit;h=577d559b38b95c1ed4d7d302e8f83c636214b5ca">commit</a> | <a href="/gitweb/?p=koha.git;a=shortlog;h=refs/tags/v17.11.14">shortlog</a> | <a href="/gitweb/?p=koha.git;a=log;h=refs/tags/v17.11.14">log</a></td>
+</tr><tr class="light">
+<td><i>4 months ago</i></td>
+<td><a class="list name" href="/gitweb/?p=koha.git;a=commit;h=eac60108318813b30f52c1a65bf8c6e8fecab30a">v17.11.13</a></td>
+<td><a class="list subject" href="/gitweb/?p=koha.git;a=tag;h=138d7ade475dcdf161bc57380819f062b8403c11">Koha release 17.11.13</a></td>
+<td class="selflink"><a href="/gitweb/?p=koha.git;a=tag;h=138d7ade475dcdf161bc57380819f062b8403c11">tag</a></td>
+<td class="link"> | <a href="/gitweb/?p=koha.git;a=commit;h=eac60108318813b30f52c1a65bf8c6e8fecab30a">commit</a> | <a href="/gitweb/?p=koha.git;a=shortlog;h=refs/tags/v17.11.13">shortlog</a> | <a href="/gitweb/?p=koha.git;a=log;h=refs/tags/v17.11.13">log</a></td>
+</tr><tr class="dark">
+<td><i>4 months ago</i></td>
+<td><a class="list name" href="/gitweb/?p=koha.git;a=commit;h=9df41ab3460aa31d8df3e11fbc972db4058623e8">v18.05.07</a></td>
+<td><a class="list subject" href="/gitweb/?p=koha.git;a=tag;h=0863988ec5dbb2099e75f978cbae0dfb41db14c9">Koha release 18.05.07</a></td>
+<td class="selflink"><a href="/gitweb/?p=koha.git;a=tag;h=0863988ec5dbb2099e75f978cbae0dfb41db14c9">tag</a></td>
+<td class="link"> | <a href="/gitweb/?p=koha.git;a=commit;h=9df41ab3460aa31d8df3e11fbc972db4058623e8">commit</a> | <a href="/gitweb/?p=koha.git;a=shortlog;h=refs/tags/v18.05.07">shortlog</a> | <a href="/gitweb/?p=koha.git;a=log;h=refs/tags/v18.05.07">log</a></td>
+</tr><tr class="light">
+<td><i>4 months ago</i></td>
+<td><a class="list name" href="/gitweb/?p=koha.git;a=commit;h=03f5bcd9187057408a1f1182b30abe1cad46b042">v18.11.01</a></td>
+<td><a class="list subject" href="/gitweb/?p=koha.git;a=tag;h=74728e38ecf5664f95dd43918a842b4bc82e7d3e">Koha release 18.11.01</a></td>
+<td class="selflink"><a href="/gitweb/?p=koha.git;a=tag;h=74728e38ecf5664f95dd43918a842b4bc82e7d3e">tag</a></td>
+<td class="link"> | <a href="/gitweb/?p=koha.git;a=commit;h=03f5bcd9187057408a1f1182b30abe1cad46b042">commit</a> | <a href="/gitweb/?p=koha.git;a=shortlog;h=refs/tags/v18.11.01">shortlog</a> | <a href="/gitweb/?p=koha.git;a=log;h=refs/tags/v18.11.01">log</a></td>
+</tr><tr class="dark">
+<td><i>4 months ago</i></td>
+<td><a class="list name" href="/gitweb/?p=koha.git;a=commit;h=ec0c6ef4145ff438f1d1a6da6da7616011ae2840">v18.11.00</a></td>
+<td><a class="list subject" href="/gitweb/?p=koha.git;a=tag;h=d897467ecebf5de5b31076d0c2cda27c21c7e5db">Koha release 18.11.00</a></td>
+<td class="selflink"><a href="/gitweb/?p=koha.git;a=tag;h=d897467ecebf5de5b31076d0c2cda27c21c7e5db">tag</a></td>
+<td class="link"> | <a href="/gitweb/?p=koha.git;a=commit;h=ec0c6ef4145ff438f1d1a6da6da7616011ae2840">commit</a> | <a href="/gitweb/?p=koha.git;a=shortlog;h=refs/tags/v18.11.00">shortlog</a> | <a href="/gitweb/?p=koha.git;a=log;h=refs/tags/v18.11.00">log</a></td>
+</tr><tr class="light">
+<td><i>4 months ago</i></td>
+<td><a class="list name" href="/gitweb/?p=koha.git;a=commit;h=ffb903404d24eb92083c4b4f9afdce25547a267e">v17.11.12</a></td>
+<td><a class="list subject" href="/gitweb/?p=koha.git;a=tag;h=aae64d8023aaeeeb89bc62aaddfead8b5196da35">Koha release 17.11.12</a></td>
+<td class="selflink"><a href="/gitweb/?p=koha.git;a=tag;h=aae64d8023aaeeeb89bc62aaddfead8b5196da35">tag</a></td>
+<td class="link"> | <a href="/gitweb/?p=koha.git;a=commit;h=ffb903404d24eb92083c4b4f9afdce25547a267e">commit</a> | <a href="/gitweb/?p=koha.git;a=shortlog;h=refs/tags/v17.11.12">shortlog</a> | <a href="/gitweb/?p=koha.git;a=log;h=refs/tags/v17.11.12">log</a></td>
+</tr><tr>
+<td colspan="5"><a href="/gitweb/?p=koha.git;a=tags">...</a></td>
+</tr>
+</table>
+<div class="header">
+<a class="title" href="/gitweb/?p=koha.git;a=heads">heads</a>
+</div>
+<table class="heads">
+<tr class="dark">
+<td><i>33 hours ago</i></td>
+<td><a class="list name" href="/gitweb/?p=koha.git;a=shortlog;h=refs/heads/18.05.x">18.05.x</a></td>
+<td class="link"><a href="/gitweb/?p=koha.git;a=shortlog;h=refs/heads/18.05.x">shortlog</a> | <a href="/gitweb/?p=koha.git;a=log;h=refs/heads/18.05.x">log</a> | <a href="/gitweb/?p=koha.git;a=tree;h=refs/heads/18.05.x;hb=refs/heads/18.05.x">tree</a></td>
+</tr><tr class="light">
+<td><i>3 days ago</i></td>
+<td class="current_head"><a class="list name" href="/gitweb/?p=koha.git;a=shortlog;h=refs/heads/master">master</a></td>
+<td class="link"><a href="/gitweb/?p=koha.git;a=shortlog;h=refs/heads/master">shortlog</a> | <a href="/gitweb/?p=koha.git;a=log;h=refs/heads/master">log</a> | <a href="/gitweb/?p=koha.git;a=tree;h=refs/heads/master;hb=refs/heads/master">tree</a></td>
+</tr><tr class="dark">
+<td><i>6 days ago</i></td>
+<td><a class="list name" href="/gitweb/?p=koha.git;a=shortlog;h=refs/heads/18.11.x">18.11.x</a></td>
+<td class="link"><a href="/gitweb/?p=koha.git;a=shortlog;h=refs/heads/18.11.x">shortlog</a> | <a href="/gitweb/?p=koha.git;a=log;h=refs/heads/18.11.x">log</a> | <a href="/gitweb/?p=koha.git;a=tree;h=refs/heads/18.11.x;hb=refs/heads/18.11.x">tree</a></td>
+</tr><tr class="light">
+<td><i>4 weeks ago</i></td>
+<td><a class="list name" href="/gitweb/?p=koha.git;a=shortlog;h=refs/heads/17.11.x">17.11.x</a></td>
+<td class="link"><a href="/gitweb/?p=koha.git;a=shortlog;h=refs/heads/17.11.x">shortlog</a> | <a href="/gitweb/?p=koha.git;a=log;h=refs/heads/17.11.x">log</a> | <a href="/gitweb/?p=koha.git;a=tree;h=refs/heads/17.11.x;hb=refs/heads/17.11.x">tree</a></td>
+</tr><tr class="dark">
+<td><i>6 months ago</i></td>
+<td><a class="list name" href="/gitweb/?p=koha.git;a=shortlog;h=refs/heads/17.05.x">17.05.x</a></td>
+<td class="link"><a href="/gitweb/?p=koha.git;a=shortlog;h=refs/heads/17.05.x">shortlog</a> | <a href="/gitweb/?p=koha.git;a=log;h=refs/heads/17.05.x">log</a> | <a href="/gitweb/?p=koha.git;a=tree;h=refs/heads/17.05.x;hb=refs/heads/17.05.x">tree</a></td>
+</tr><tr class="light">
+<td><i>13 months ago</i></td>
+<td><a class="list name" href="/gitweb/?p=koha.git;a=shortlog;h=refs/heads/16.11.x">16.11.x</a></td>
+<td class="link"><a href="/gitweb/?p=koha.git;a=shortlog;h=refs/heads/16.11.x">shortlog</a> | <a href="/gitweb/?p=koha.git;a=log;h=refs/heads/16.11.x">log</a> | <a href="/gitweb/?p=koha.git;a=tree;h=refs/heads/16.11.x;hb=refs/heads/16.11.x">tree</a></td>
+</tr><tr class="dark">
+<td><i>16 months ago</i></td>
+<td><a class="list name" href="/gitweb/?p=koha.git;a=shortlog;h=refs/heads/16.05.x">16.05.x</a></td>
+<td class="link"><a href="/gitweb/?p=koha.git;a=shortlog;h=refs/heads/16.05.x">shortlog</a> | <a href="/gitweb/?p=koha.git;a=log;h=refs/heads/16.05.x">log</a> | <a href="/gitweb/?p=koha.git;a=tree;h=refs/heads/16.05.x;hb=refs/heads/16.05.x">tree</a></td>
+</tr><tr class="light">
+<td><i>23 months ago</i></td>
+<td><a class="list name" href="/gitweb/?p=koha.git;a=shortlog;h=refs/heads/3.22.x">3.22.x</a></td>
+<td class="link"><a href="/gitweb/?p=koha.git;a=shortlog;h=refs/heads/3.22.x">shortlog</a> | <a href="/gitweb/?p=koha.git;a=log;h=refs/heads/3.22.x">log</a> | <a href="/gitweb/?p=koha.git;a=tree;h=refs/heads/3.22.x;hb=refs/heads/3.22.x">tree</a></td>
+</tr><tr class="dark">
+<td><i>2 years ago</i></td>
+<td><a class="list name" href="/gitweb/?p=koha.git;a=shortlog;h=refs/heads/3.20.x">3.20.x</a></td>
+<td class="link"><a href="/gitweb/?p=koha.git;a=shortlog;h=refs/heads/3.20.x">shortlog</a> | <a href="/gitweb/?p=koha.git;a=log;h=refs/heads/3.20.x">log</a> | <a href="/gitweb/?p=koha.git;a=tree;h=refs/heads/3.20.x;hb=refs/heads/3.20.x">tree</a></td>
+</tr><tr class="light">
+<td><i>2 years ago</i></td>
+<td><a class="list name" href="/gitweb/?p=koha.git;a=shortlog;h=refs/heads/new_12478_elasticsearch">new_12478_elasticsearch</a></td>
+<td class="link"><a href="/gitweb/?p=koha.git;a=shortlog;h=refs/heads/new_12478_elasticsearch">shortlog</a> | <a href="/gitweb/?p=koha.git;a=log;h=refs/heads/new_12478_elasticsearch">log</a> | <a href="/gitweb/?p=koha.git;a=tree;h=refs/heads/new_12478_elasticsearch;hb=refs/heads/new_12478_elasticsearch">tree</a></td>
+</tr><tr class="dark">
+<td><i>3 years ago</i></td>
+<td><a class="list name" href="/gitweb/?p=koha.git;a=shortlog;h=refs/heads/3.18.x">3.18.x</a></td>
+<td class="link"><a href="/gitweb/?p=koha.git;a=shortlog;h=refs/heads/3.18.x">shortlog</a> | <a href="/gitweb/?p=koha.git;a=log;h=refs/heads/3.18.x">log</a> | <a href="/gitweb/?p=koha.git;a=tree;h=refs/heads/3.18.x;hb=refs/heads/3.18.x">tree</a></td>
+</tr><tr class="light">
+<td><i>3 years ago</i></td>
+<td><a class="list name" href="/gitweb/?p=koha.git;a=shortlog;h=refs/heads/3.14.x">3.14.x</a></td>
+<td class="link"><a href="/gitweb/?p=koha.git;a=shortlog;h=refs/heads/3.14.x">shortlog</a> | <a href="/gitweb/?p=koha.git;a=log;h=refs/heads/3.14.x">log</a> | <a href="/gitweb/?p=koha.git;a=tree;h=refs/heads/3.14.x;hb=refs/heads/3.14.x">tree</a></td>
+</tr><tr class="dark">
+<td><i>3 years ago</i></td>
+<td><a class="list name" href="/gitweb/?p=koha.git;a=shortlog;h=refs/heads/3.16.x">3.16.x</a></td>
+<td class="link"><a href="/gitweb/?p=koha.git;a=shortlog;h=refs/heads/3.16.x">shortlog</a> | <a href="/gitweb/?p=koha.git;a=log;h=refs/heads/3.16.x">log</a> | <a href="/gitweb/?p=koha.git;a=tree;h=refs/heads/3.16.x;hb=refs/heads/3.16.x">tree</a></td>
+</tr><tr class="light">
+<td><i>4 years ago</i></td>
+<td><a class="list name" href="/gitweb/?p=koha.git;a=shortlog;h=refs/heads/MM-OPAC/theme_dep">MM-OPAC/theme_dep</a></td>
+<td class="link"><a href="/gitweb/?p=koha.git;a=shortlog;h=refs/heads/MM-OPAC/theme_dep">shortlog</a> | <a href="/gitweb/?p=koha.git;a=log;h=refs/heads/MM-OPAC/theme_dep">log</a> | <a href="/gitweb/?p=koha.git;a=tree;h=refs/heads/MM-OPAC/theme_dep;hb=refs/heads/MM-OPAC/theme_dep">tree</a></td>
+</tr><tr class="dark">
+<td><i>4 years ago</i></td>
+<td><a class="list name" href="/gitweb/?p=koha.git;a=shortlog;h=refs/heads/3.12.x">3.12.x</a></td>
+<td class="link"><a href="/gitweb/?p=koha.git;a=shortlog;h=refs/heads/3.12.x">shortlog</a> | <a href="/gitweb/?p=koha.git;a=log;h=refs/heads/3.12.x">log</a> | <a href="/gitweb/?p=koha.git;a=tree;h=refs/heads/3.12.x;hb=refs/heads/3.12.x">tree</a></td>
+</tr><tr class="light">
+<td><i>4 years ago</i></td>
+<td><a class="list name" href="/gitweb/?p=koha.git;a=shortlog;h=refs/heads/3.8.x">3.8.x</a></td>
+<td class="link"><a href="/gitweb/?p=koha.git;a=shortlog;h=refs/heads/3.8.x">shortlog</a> | <a href="/gitweb/?p=koha.git;a=log;h=refs/heads/3.8.x">log</a> | <a href="/gitweb/?p=koha.git;a=tree;h=refs/heads/3.8.x;hb=refs/heads/3.8.x">tree</a></td>
+</tr><tr>
+<td colspan="3"><a href="/gitweb/?p=koha.git;a=heads">...</a></td>
+</tr>
+</table>
+<div class="page_footer">
+<div class="page_footer_text">main Koha release repository</div>
+<a class="rss_logo" title="log RSS feed" href="/gitweb/?p=koha.git;a=rss">RSS</a>
+<a class="rss_logo" title="log Atom feed" href="/gitweb/?p=koha.git;a=atom">Atom</a>
+</div>
+<script type="text/javascript" src="static/gitweb.js"></script>
+<script type="text/javascript">
+window.onload = function () {
+	var tz_cookie = { name: 'gitweb_tz', expires: 14, path: '/' };
+	onloadTZSetup('local', tz_cookie, 'datetime');
+};
+</script>
+</body>
+</html>

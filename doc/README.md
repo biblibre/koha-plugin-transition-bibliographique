@@ -14,9 +14,6 @@ Ce plugin est découpé en deux parties:
 
 ![Plugin - outil d'export](images/koha-plugins.png)
 
-Ce plugin a été initiallement commandé par l'association [Kohala](http://koha-fr.org/) et développé par [BibLibre](http://biblibre.com/). Il est sous [licence libre]().
+Ce plugin a été initiallement commandé par l'association [Kohala](http://koha-fr.org/) et développé par [BibLibre](http://biblibre.com/). Il est sous [licence libre](../LICENSE).
 
-Pour accéder au plugin, rendez vous sur:
-* Outils
-* Outil de Plugins
-* Bouton "Lancer l'outil" (du dit plugin)
+Pour accéder au plugin, rendez vous sur: Outils > Outil de Plugins >  Bouton "Lancer l'outil" (du dit plugin)
