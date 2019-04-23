@@ -24,11 +24,12 @@ Fix souhaités initialement :
 * Par type de document (par exemple: 319, 039, 995rou200b)
 * Par côte
 * Modifié entre A et B
-* Du biblionumber A à B (le moins pertinent)Un exemple avec plusieurs conditions enchaînée
+* Du biblionumber A à B (le moins pertinent)
+* Un exemple avec plusieurs conditions enchaînées
 
 Le traitement se base sur les données contenues dans le catalogue et pas spécifiquement sur les colonnes du SIGB. Ainsi si les données ne sont pas dans vos grilles de catalogage vous ne pourrez pas filtrer sur celles ci.
 
-Vous trouverez dans chaque "fix" sa documentation dans le "fichier associé"":https://github.com/biblibre/koha-plugin-transition-bibliographique/tree/master/Koha/Plugin/Com/BibLibre/TransitionBibliographique/fixes. Vous pouvez contribuer de nouvelles règles par les processus habituels de Github.
+Vous trouverez dans chaque "fix" sa documentation dans le [fichier associé](../Koha/Plugin/Com/BibLibre/TransitionBibliographique/fixes). Vous pouvez contribuer de nouvelles règles par les processus habituels de Github.
 
 Le processus est lancé à la volée. Pour les plus gros catalogues, il faudra peut être envisager une mise en background de la tache. Cette option n'est pas incluse dans la version 0.0.2.
 
