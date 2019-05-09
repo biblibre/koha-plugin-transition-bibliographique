@@ -40,13 +40,13 @@
                         <option value="">Sélectionnez un paramétrage</option>
                         [% FOREACH fix IN fixes %]
                             [% selected = (CGI.param('fix') == fix.name) %]
-                            <option value="[% fix.name %]" data-content="[% fix.content %]" [% IF selected %]selected[% END %]>[% fix.title %]</option>
+                            <option value="[% fix.name %]" data-content="[% fix.content | html %]" [% IF selected %]selected[% END %]>[% fix.title | html %]</option>
                         [% END %]
                     </select>
                     <details id="modify-fix">
                         <summary>Modifier le paramétrage</summary>
 
-                        <textarea rows="10" class="form-control" id="fix-content" name="fix-content" disabled>[% CGI.param('fix-content') %]</textarea>
+                        <textarea rows="10" class="form-control" id="fix-content" name="fix-content" disabled>[% CGI.param('fix-content') | html %]</textarea>
                 </div>
 
                 <div class="form-group">
