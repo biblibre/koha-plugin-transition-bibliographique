@@ -50,7 +50,7 @@
                 </div>
 
                 <div class="form-group">
-                    [% formats = ['CSV', 'TSV', 'JSON', 'MARC'] %]
+                    [% formats = ['MARC', 'CSV', 'TSV', 'JSON'] %]
                     <label for="format">Format d'export</label>
                     <select class="form-control" id="format" name="format">
                         [% FOREACH format IN formats %]
