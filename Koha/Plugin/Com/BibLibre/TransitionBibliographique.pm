@@ -9,6 +9,7 @@ use Catmandu::Exporter::MARC;
 use Catmandu::Sane;
 use Encode;
 use File::Temp qw(tempfile);
+use IO::Scalar;
 use JSON;
 use List::MoreUtils qw(first_index any);
 use Text::CSV::Encoded;
@@ -324,17 +325,25 @@ sub do_export {
 
     my $importer = Catmandu->importer('MARC', file => $filepath);
     my $fixer = Catmandu->fixer($fixpath);
-    my $exporter = Catmandu->exporter($format);
+
+    # Not sure what happens here, but if we let Catmandu directly write on
+    # STDOUT there is an encoding problem
+    my $output = '';
+    my $sh = IO::Scalar->new(\$output);
+    my $exporter = Catmandu->exporter($format, fh => $sh);
 
     my $default_filename = 'export.' . lc($format);
     my $filename = $args->{filename} || $default_filename;
 
     print $self->{cgi}->header(
-        -type => $content_type_mapping{$format},
+        -type => $content_type_mapping{$format} . '; charset=utf-8',
         -content_disposition => "attachment; filename=$filename",
     );
     $exporter->add_many($fixer->fix($importer));
     $exporter->commit;
+    $sh->close;
+
+    print $output;
 }
 
 sub validate_form {
