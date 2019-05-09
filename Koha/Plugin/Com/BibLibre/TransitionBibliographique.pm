@@ -584,7 +584,7 @@ sub execute_job {
                     $self->job_log($job, "Identifiant ajouté pour la notice $id (ligne $linenumber)");
                     $updated++;
                 } else {
-                    $self->job_log($job, "Format d'identifiant non reconnu : $external_id");
+                    $self->job_log($job, "Impossible de formatter l'identifiant, format non reconnu : $external_id");
                 }
             }
         } else {

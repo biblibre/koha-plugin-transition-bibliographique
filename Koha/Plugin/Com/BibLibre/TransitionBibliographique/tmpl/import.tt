@@ -61,6 +61,7 @@
                         <option value="clean" [% IF identifier_format == 'clean' %]selected[% END %]>Nettoyer</option>
                         <option value="uri" [% IF identifier_format == 'uri' %]selected[% END %]>Convertir au format URI</option>
                     </select>
+                    <span class="help-block">Seuls les identifiants ajoutés seront formattés. Les identifiants existants resteront inchangés.</span>
                 </div>
 
                 <input type="hidden" name="class" value="[% CLASS %]">
