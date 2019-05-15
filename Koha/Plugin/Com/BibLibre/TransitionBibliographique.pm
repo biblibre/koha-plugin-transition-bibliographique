@@ -9,7 +9,6 @@ use Catmandu::Exporter::MARC;
 use Catmandu::Sane;
 use Encode;
 use File::Temp qw(tempfile);
-use IO::Scalar;
 use JSON;
 use List::MoreUtils qw(first_index any);
 use Text::CSV::Encoded;
@@ -328,9 +327,9 @@ sub do_export {
 
     # Not sure what happens here, but if we let Catmandu directly write on
     # STDOUT there is an encoding problem
-    my $output = '';
-    my $sh = IO::Scalar->new(\$output);
-    my $exporter = Catmandu->exporter($format, fh => $sh);
+    # So we use a temporary file instead
+    my $fh = File::Temp->new();
+    my $exporter = Catmandu->exporter($format, file => $fh);
 
     my $default_filename = 'export.' . lc($format);
     my $filename = $args->{filename} || $default_filename;
@@ -341,9 +340,11 @@ sub do_export {
     );
     $exporter->add_many($fixer->fix($importer));
     $exporter->commit;
-    $sh->close;
 
-    print $output;
+    # Rewind to the beginning of the file
+    seek($fh, 0, 0);
+
+    print <$fh>;
 }
 
 sub validate_form {
