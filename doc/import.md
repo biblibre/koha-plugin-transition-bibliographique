@@ -1,4 +1,4 @@
-## Import des identifiants dans votre catalogue
+# Import des identifiants dans votre catalogue
 
 Avant le développement de ce plugin, une fois la liste d'identifiants obtenue et validée par le
 bibliothécaire, il n'était pas possible de simplement intégrer ces identifiants dans
@@ -6,7 +6,7 @@ Koha.
 
 ![Plugin - outil d'import](images/koha-plugin-tb-import.png)
 
-### Formulaire
+## Formulaire
 
 Cet outil propose à l'utilisateur de :
 * Télécharger sur le serveur des fichiers CSV contenant les
@@ -16,7 +16,7 @@ biblionumber dans une colonne et l'identifiant à intégrer dans une autre. Vous
 * Indiquer le nom de la colonne source contenant l'identifiant à ajouter à votrecatalogue (identifiant externe)
 * Indiquer le champ Unimarc cible où l'identifiant externe sera injecté
 
-### Exemple
+## Exemple
 
 Dans votre catalogue:
 ```
@@ -87,3 +87,35 @@ Après l'exécution du script, l'utilisateur pourra voir les logs de chaque trai
 * Les identifiants des notices qui n'ont pas pu être mises à jour (non
 trouvées)
 * Le nombre de notices mises à jour
+
+## Points de vigilance
+
+* Avant de télécharger le fichier csv sur le serveur, penser à vérifier le nom des colonnes et le format de ce dernier
+
+OK
+```
+NumNot,Nb,identifiants,trouvés,Liste,identifiants,trouvés,Méthode,d'alignement,FRBNF,ARK,ISBN,EAN,Titre,Auteur,Date,Volume-Tome,Editeur,,,,,,,,
+2,1,PPN186264577,ISBN,|,Problèmes,dans,métadonnées,Titre-Auteur-Date-Volume,,,978-2-215-08720-5,,Saisons,,Les,,emilie,catherine,"redoula""s",ferrier,beaumont,sta(c)phanie,2011,,Fleurus
+```
+OK
+```
+biblionumber, ppn
+3, PPN186264577
+10,http://www.sudoc.fr/157396568
+```
+
+KO => les valeurs ne sont pas bonnes
+```
+_id,record
+1,ARRAY(0xcbb9300)
+2,ARRAY(0xca27198)
+3,ARRAY(0xe8188a8)
+```
+
+KO => ce n'est pas un fichier CSV
+```
+<?xml version="1.0" encoding="UTF-8"?>
+<collection
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.loc.gov/MARC21/slim http://www.loc.gov/standards/marcxml/schema/MARC21slim.xsd"
+```
