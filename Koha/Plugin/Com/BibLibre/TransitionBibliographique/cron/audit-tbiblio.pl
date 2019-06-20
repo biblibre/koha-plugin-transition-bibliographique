@@ -10,8 +10,6 @@ use Koha::Plugins;
 use Koha::Exporter::Record;
 use Koha::Plugin::Com::BibLibre::TransitionBibliographique;
 
-
-
 sub check_for_audit {
 
   say "Date : ". &_get_date;
@@ -24,6 +22,19 @@ sub check_for_audit {
 
   say "\nCount records with fields";
   say &_get_count_records_with_fields;
+
+  say "\nCount BnF ARK";
+  say &_query_database_for_count(&_get_count_ark_bnf);
+
+  say "\nCount PPN";
+  say &_query_database_for_count(&_get_count_ppn_id);
+
+  say "\nCount Others 033a";
+  say &_query_database_for_count(&_get_count_others_033a);
+
+  say "\nCount aligned Biblios";
+  say &_query_database_for_count(&_get_count_aligned_biblios);
+
 }
 
 sub _get_date {
@@ -61,21 +72,62 @@ sub _get_count_biblios {
 }
 
 sub _get_count_ark_bnf {
-  # count O33a contient ark:/12148/
+  # count O33a contenant ark:/12148/
+  my $query = q|
+  select count(*) as count from biblio_metadata
+  where ExtractValue(metadata, '//datafield[@tag="033"]/subfield[@code="a"]') like "%ark:/12148/%";
+  |;
 }
 
-
 sub _get_count_ppn_id {
-  # count 009 ou O33a contient PPN ou sudoc.com
+  # count 009 ou O33a contient PPN* ou sudoc.fr/* ou 009=[alphanum]
+  my $query = q|
+  select count(*) as count from biblio_metadata
+  where
+    (ExtractValue(metadata, '//datafield[@tag="033"]/subfield[@code="a"]') like "%sudoc.fr/%"
+      OR
+    ExtractValue(metadata, '//datafield[@tag="033"]/subfield[@code="a"]') like "PPN%"
+      OR
+    ExtractValue(metadata, '//controlfield[@tag="009"]') like "PPN%"
+      OR
+    ExtractValue(metadata, '//controlfield[@tag="009"]') like "%sudoc.fr/%"
+      OR
+    ExtractValue(metadata, '//controlfield[@tag="009"]') REGEXP '^[A-Za-z0-9]+$')
+    ;
+  |;
 }
 
 sub _get_count_others_033a {
-  # count O33a qui n'ont ni ark ni ppn
+  # count O33a qui n'ont ni ark ni ppn et les notices avec une valeur en 033a
+  my $query = q|
+      select count(*) as count from biblio_metadata
+      where
+        ExtractValue(metadata, '//datafield[@tag="033"]/subfield[@code="a"]') not like "%sudoc.fr/%"
+          AND
+        ExtractValue(metadata, '//datafield[@tag="033"]/subfield[@code="a"]') not like "PPN%"
+          AND
+        ExtractValue(metadata, '//datafield[@tag="033"]/subfield[@code="a"]') not like "%ark:/12148/%"
+          AND
+        ExtractValue(metadata, 'count(//datafield[@tag="033"]/subfield[@code="a"])') > 0
+    ;
+  |;
 }
 
 sub _get_count_aligned_biblios {
-  # count O33a contient un seul ark:/12148/ ou un ark et un PPN ou un PPN
+  # count O33a contient un seul %ark:/12148/% ou un ark et un PPN ou un PPN
   # (notice "alignée de manière unique avec un réservoir national")
+  # where  la combinatoire des clauses précédentes
+  # (count = 1 et like ark) ou (count = 1 et (like sudoc.com ou like ppn)) ou (count=2 et like ark et (like sudoc.com ou like ppn))
+  my $query = q|
+      select count(*) as count from biblio_metadata
+      where
+        ExtractValue(metadata, '//datafield[@tag="033"]/subfield[@code="a"]') like "%sudoc.fr/%"
+          OR
+        ExtractValue(metadata, '//datafield[@tag="033"]/subfield[@code="a"]') like "PPN%"
+          OR
+        ExtractValue(metadata, '//datafield[@tag="033"]/subfield[@code="a"]') like "%ark:/12148/%"
+    ;
+  |;
 }
 
 sub _get_count_records_with_fields {
@@ -126,7 +178,7 @@ sub _get_count_records_with_fields {
     } else {
       $query = q|
           select count(*) as count from biblio_metadata
-          where ExtractValue(metadata, 'count(//datafield[@tag="#field#"])')>0;
+          where ExtractValue(metadata, 'count(//controlfield[@tag="#field#"])')>0;
         |;
     }
 
@@ -139,11 +191,11 @@ sub _get_count_records_with_fields {
     $count_sth->execute(  );
     my ( $num_records ) = $count_sth->fetchrow;
 
-    print "$value : >>>".$num_records."\n";
+    print "$value : ".$num_records."\n";
     $marc_ref->{$value}->{"count"} = $num_records;
   }
 
-  warn Dumper $marc_ref;
+  #warn Dumper $marc_ref;
 
 }
 
