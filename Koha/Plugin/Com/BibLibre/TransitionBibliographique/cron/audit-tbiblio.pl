@@ -11,29 +11,34 @@ use Koha::Exporter::Record;
 use Koha::Plugin::Com::BibLibre::TransitionBibliographique;
 
 sub check_for_audit {
-
+  my %result;
   say "Date : ". &_get_date;
 
-  say "\nGrille de catalogage default";
-  &_get_marcframework_validation;
-
   say "\nCount records";
-  say &_query_database_for_count(&_get_count_biblios);
+  %result = &_query_database_for_count_and_save(&_get_count_biblios, "count_biblios");
+  say $result{num_records};
+
+  say "\nGrille de catalogage default";
+  %result = &_get_marcframework_validation ($result{id});
 
   say "\nCount records with fields";
-  say &_get_count_records_with_fields;
+  %result = &_get_count_records_with_fields ($result{id});
 
   say "\nCount BnF ARK";
-  say &_query_database_for_count(&_get_count_ark_bnf);
+  %result =  &_query_database_for_count_and_save(&_get_count_ark_bnf, "count_bnf_ark", $result{id});
+  say $result{num_records};
 
   say "\nCount PPN";
-  say &_query_database_for_count(&_get_count_ppn_id);
+  %result = &_query_database_for_count_and_save(&_get_count_ppn_id, "count_sudoc_ppn", $result{id});
+  say $result{num_records};
 
   say "\nCount Others 033a";
-  say &_query_database_for_count(&_get_count_others_033a);
+  %result = &_query_database_for_count_and_save(&_get_count_others_033a, "count_ids_in_033a", $result{id});
+  say $result{num_records};
 
   say "\nCount aligned Biblios";
-  say &_query_database_for_count(&_get_count_aligned_biblios);
+  %result = &_query_database_for_count_and_save(&_get_count_aligned_biblios, "count_aligned_biblios", $result{id});
+  say $result{num_records};
 
 }
 
@@ -43,26 +48,76 @@ sub _get_date {
 }
 
 sub _get_marcframework_validation {
+    my ( $id ) = @_;
+    my %returns;
+
     my $marcstructure = C4::Biblio::GetMarcStructure(1,'');
 
     my $ok = "\033[32;1mv\033[0m" ;
     my $ko = "\033[31;1mx\033[0m";
 
-    say "009:" . (defined($marcstructure->{'009'}) ? $ok : $ko);
-    say "033a:" . (defined($marcstructure->{'033'}->{'a'}) ? $ok : $ko);
-    say "181c:" . (defined($marcstructure->{'181'}->{'c'}) ? $ok : $ko);
-    say "182c:" . (defined($marcstructure->{'182'}->{'c'}) ? $ok : $ko);
-    say "183c:" . (defined($marcstructure->{'183'}->{'c'}) ? $ok : $ko);
-    say "219:" . (defined($marcstructure->{'219'}) ? $ok : $ko);
+    my $check_marcfield_009  = $marcstructure->{'009'};
+    my $check_marcfield_033a = $marcstructure->{'033'}->{'a'};
+    my $check_marcfield_181c = $marcstructure->{'181'}->{'c'};
+    my $check_marcfield_182c = $marcstructure->{'182'}->{'c'};
+    my $check_marcfield_183c = $marcstructure->{'183'}->{'c'};
+    my $check_marcfield_219  = $marcstructure->{'219'};
+
+    say "009:"  .  (defined($check_marcfield_009) ? $ok : $ko);
+    say "033a:" . (defined($check_marcfield_033a) ? $ok : $ko);
+    say "181c:" . (defined($check_marcfield_181c) ? $ok : $ko);
+    say "182c:" . (defined($check_marcfield_182c) ? $ok : $ko);
+    say "183c:" . (defined($check_marcfield_183c) ? $ok : $ko);
+    say "219:"  .  (defined($check_marcfield_219) ? $ok : $ko);
+
+    %returns = &_save_data (undef, "check_marcfield_009",  (defined($check_marcfield_009))  , $id);
+    %returns = &_save_data (undef, "check_marcfield_033a", (defined($check_marcfield_033a)) , $returns{id});
+    %returns = &_save_data (undef, "check_marcfield_181c", (defined($check_marcfield_181c)) , $returns{id});
+    %returns = &_save_data (undef, "check_marcfield_182c", (defined($check_marcfield_182c)) , $returns{id});
+    %returns = &_save_data (undef, "check_marcfield_183c", (defined($check_marcfield_183c)) , $returns{id});
+    %returns = &_save_data (undef, "check_marcfield_219",  (defined($check_marcfield_219))  , $returns{id});
+
+    return %returns;
+}
+
+sub _save_data {
+  my ( $dbh, $field, $value, $id ) = @_;
+  my %returns;
+
+  my $table = "audit_tb";
+  if (!defined $dbh) {
+    $dbh = C4::Context->dbh;
+  }
+  if (defined $id) {
+    $dbh->do( "UPDATE audit_tb SET $field = '$value' WHERE audit_id= '$id'" );
+    $returns{id} = $id;
+  } else {
+    $dbh->do( "INSERT INTO $table ( $field ) VALUES ( ? )", undef, ($value) );
+    $returns{id} = $dbh->last_insert_id( undef, undef, 'audit_tb', undef );
+  }
+  return %returns;
 
 }
 
-sub _query_database_for_count {
-  my (  $query ) = @_;
+sub _query_database_for_count_and_save {
+  my ( $query, $field, $id ) = @_;
+  #say "BEFORE".$id;
+  my %returns;
   my $dbh = C4::Context->dbh;
   my $count_sth = $dbh->prepare($query);
   $count_sth->execute();
-  my ( $num_records ) = $count_sth->fetchrow;
+  $returns{num_records} = $count_sth->fetchrow;
+  if (defined $id) {
+    $dbh->do( "UPDATE audit_tb SET $field = '$returns{num_records}' WHERE audit_id= '$id' ");
+    $returns{id} = $id;
+
+  } else {
+    $dbh->do( "INSERT INTO audit_tb ( $field ) VALUES ( ? )", undef, ($returns{num_records}) );
+    $returns{id} = $dbh->last_insert_id( undef, undef, 'audit_tb', undef );
+  }
+  #say "AFTER".$returns{id};
+
+  return %returns;
 }
 
 sub _get_count_biblios {
@@ -131,37 +186,45 @@ sub _get_count_aligned_biblios {
 }
 
 sub _get_count_records_with_fields {
+  my ( $id ) = @_;
+  my %returns;
 
   my $marc_ref = {
     '033a' => {
       field => '033',
       subfield => 'a',
-      count => undef
+      count => undef,
+      column => 'count_marcfield_033a'
     },
     '181c' => {
       field => '181',
       subfield => 'c',
-      count => undef
+      count => undef,
+      column => 'count_marcfield_181c'
     },
     '182c' => {
       field => '182',
       subfield => 'c',
-      count => undef
+      count => undef,
+      column => 'count_marcfield_182c'
     },
     '183c' => {
       field => '183',
       subfield => 'c',
-      count => undef
+      count => undef,
+      column => 'count_marcfield_183c'
     },
     '009' => {
       field => '009',
       subfield => undef,
-      count => undef
+      count => undef,
+      column => 'count_marcfield_009'
     },
     '219' => {
       field => '219',
       subfield => undef,
-      count => undef
+      count => undef,
+      column => 'count_marcfield_219'
     }
   };
 
@@ -194,8 +257,20 @@ sub _get_count_records_with_fields {
     print "$value : ".$num_records."\n";
     $marc_ref->{$value}->{"count"} = $num_records;
   }
+  if (defined $id) {
+    $returns{id} = $id;
+  }
+  foreach my $value (keys %$marc_ref) {
+    %returns = &_save_data (
+      $dbh,
+      $marc_ref->{$value}->{"column"},
+      $marc_ref->{$value}->{"count"},
+      $returns{id}
+    );
 
+  }
   #warn Dumper $marc_ref;
+  return %returns;
 
 }
 
