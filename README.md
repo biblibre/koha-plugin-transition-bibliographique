@@ -3,6 +3,13 @@
 Ce plugin vise à faciliter l'export et l'import de données dans Koha pour la
 transition bibliographique
 
+# Documentation fonctionnelle
+
+[Index de la documentation fonctionnelle](doc/)
+
+![Plugin - outil d'import](doc/images/koha-plugin-tb-import.png)
+
+
 # Pré-requis
 
 - Koha 18.11 minimum
