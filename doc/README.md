@@ -13,6 +13,6 @@ Suite de la documentation:
 
 ![Plugin - outil d'export](images/koha-plugins.png)
 
-Ce plugin a été initiallement commandé par l'association [Kohala](http://koha-fr.org/) et développé par [BibLibre](http://biblibre.com/). Il est sous [licence libre](../LICENSE).
+Ce plugin a été initialement commandé par l'association [Kohala](http://koha-fr.org/) et développé par [BibLibre](http://biblibre.com/). Il est sous [licence libre](../LICENSE).
 
 Pour accéder au plugin, rendez vous sur: Outils > Outil de Plugins >  Bouton "Lancer l'outil" (du dit plugin)
