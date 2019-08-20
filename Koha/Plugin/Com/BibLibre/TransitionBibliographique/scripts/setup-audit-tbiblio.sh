@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# mysql -e "DROP TABLE IF EXISTS audit_tb;"
+mysql -e "DROP TABLE IF EXISTS koha_plugin_com_biblibre_transitionbibliographique_audit_tb;"
 
 mysql -e "
-    CREATE TABLE audit_tb (
+    CREATE TABLE koha_plugin_com_biblibre_transitionbibliographique_audit_tb (
       audit_id int(11) NOT NULL AUTO_INCREMENT,
       timestamp timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP, -- date d exécution de l audit
       check_marcfield_009  tinyint(1) NOT NULL, -- presence du 009

@@ -10,6 +10,8 @@ use Koha::Plugins;
 use Koha::Exporter::Record;
 use Koha::Plugin::Com::BibLibre::TransitionBibliographique;
 
+my $table = "koha_plugin_com_biblibre_transitionbibliographique_audit_tb";
+
 sub check_for_audit {
   my %result;
   say "Date : ". &_get_date;
@@ -18,7 +20,7 @@ sub check_for_audit {
   %result = &_query_database_for_count_and_save(&_get_count_biblios, "count_biblios");
   say $result{num_records};
 
-  say "\nGrille de catalogage default";
+  say "\nDefault Marc framework";
   %result = &_get_marcframework_validation ($result{id});
 
   say "\nCount records with fields";
@@ -84,16 +86,15 @@ sub _save_data {
   my ( $dbh, $field, $value, $id ) = @_;
   my %returns;
 
-  my $table = "audit_tb";
   if (!defined $dbh) {
     $dbh = C4::Context->dbh;
   }
   if (defined $id) {
-    $dbh->do( "UPDATE audit_tb SET $field = '$value' WHERE audit_id= '$id'" );
+    $dbh->do( "UPDATE $table SET $field = '$value' WHERE audit_id= '$id'" );
     $returns{id} = $id;
   } else {
     $dbh->do( "INSERT INTO $table ( $field ) VALUES ( ? )", undef, ($value) );
-    $returns{id} = $dbh->last_insert_id( undef, undef, 'audit_tb', undef );
+    $returns{id} = $dbh->last_insert_id( undef, undef, $table, undef );
   }
   return %returns;
 
@@ -108,12 +109,12 @@ sub _query_database_for_count_and_save {
   $count_sth->execute();
   $returns{num_records} = $count_sth->fetchrow;
   if (defined $id) {
-    $dbh->do( "UPDATE audit_tb SET $field = '$returns{num_records}' WHERE audit_id= '$id' ");
+    $dbh->do( "UPDATE $table SET $field = '$returns{num_records}' WHERE audit_id= '$id' ");
     $returns{id} = $id;
 
   } else {
-    $dbh->do( "INSERT INTO audit_tb ( $field ) VALUES ( ? )", undef, ($returns{num_records}) );
-    $returns{id} = $dbh->last_insert_id( undef, undef, 'audit_tb', undef );
+    $dbh->do( "INSERT INTO $table ( $field ) VALUES ( ? )", undef, ($returns{num_records}) );
+    $returns{id} = $dbh->last_insert_id( undef, undef, $table, undef );
   }
   #say "AFTER".$returns{id};
 
