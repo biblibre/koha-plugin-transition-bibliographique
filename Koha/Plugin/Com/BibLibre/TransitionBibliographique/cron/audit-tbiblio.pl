@@ -1,10 +1,7 @@
 #!/usr/bin/env perl
 
-use utf8;
-
 use Modern::Perl;
 use C4::Context;
-use autouse 'Data::Dumper' => qw(Dumper);
 
 use Koha::Plugins;
 use Koha::Exporter::Record;
@@ -46,7 +43,7 @@ sub check_for_audit {
 
 sub _get_date {
   use POSIX qw(strftime);
-  my $date = strftime "%m/%d/%Y", localtime;
+  return strftime "%m/%d/%Y", localtime;
 }
 
 sub _get_marcframework_validation {
@@ -122,14 +119,14 @@ sub _query_database_for_count_and_save {
 }
 
 sub _get_count_biblios {
-  my $query = q|
+  return q|
           select count(*) from biblio;
         |;
 }
 
 sub _get_count_ark_bnf {
   # count O33a contenant ark:/12148/
-  my $query = q|
+  return q|
   select count(*) as count from biblio_metadata
   where ExtractValue(metadata, '//datafield[@tag="033"]/subfield[@code="a"]') like "%ark:/12148/%";
   |;
@@ -137,7 +134,7 @@ sub _get_count_ark_bnf {
 
 sub _get_count_ppn_id {
   # count 009 ou O33a contient PPN* ou sudoc.fr/* ou 009=[alphanum]
-  my $query = q|
+  return q|
   select count(*) as count from biblio_metadata
   where
     (ExtractValue(metadata, '//datafield[@tag="033"]/subfield[@code="a"]') like "%sudoc.fr/%"
@@ -155,7 +152,7 @@ sub _get_count_ppn_id {
 
 sub _get_count_others_033a {
   # count O33a qui n'ont ni ark ni ppn et les notices avec une valeur en 033a
-  my $query = q|
+  return q|
       select count(*) as count from biblio_metadata
       where
         ExtractValue(metadata, '//datafield[@tag="033"]/subfield[@code="a"]') not like "%sudoc.fr/%"
@@ -174,7 +171,7 @@ sub _get_count_aligned_biblios {
   # (notice "alignée de manière unique avec un réservoir national")
   # where  la combinatoire des clauses précédentes
   # (count = 1 et like ark) ou (count = 1 et (like sudoc.com ou like ppn)) ou (count=2 et like ark et (like sudoc.com ou like ppn))
-  my $query = q|
+  return q|
       select count(*) as count from biblio_metadata
       where
         ExtractValue(metadata, '//datafield[@tag="033"]/subfield[@code="a"]') like "%sudoc.fr/%"
@@ -270,7 +267,6 @@ sub _get_count_records_with_fields {
     );
 
   }
-  #warn Dumper $marc_ref;
   return %returns;
 
 }

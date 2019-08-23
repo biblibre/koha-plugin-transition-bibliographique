@@ -28,7 +28,3 @@ mysql -e "
       PRIMARY KEY (audit_id)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 "
-
-# mysql -e "insert into audit_tb values  (1, NOW(),1,1,0,0,0, 1,2304,0,0,23, 123,343,50,334,2.5, 289343, 45223, 3,0);"
-# mysql -e "insert into audit_tb values  (2, NOW(),1,1,1,0,0, 1,2544,0,0,23, 223,344,50,334,3, 289344, 45244, 4,0);"
-# mysql -e "insert into audit_tb values  (3, NOW(),1,1,1,1,0, 1,2894,0,0,26, 423,355,50,534,3, 289353, 45243, 4,0);"
