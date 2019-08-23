@@ -11,32 +11,32 @@ my $table = "koha_plugin_com_biblibre_transitionbibliographique_audit_tb";
 
 sub check_for_audit {
   my %result;
-  say "Date : ". &_get_date;
+  say "Date : ". _get_date();
 
   say "\nCount records";
-  %result = &_query_database_for_count_and_save(&_get_count_biblios, "count_biblios");
+  %result = _query_database_for_count_and_save(_get_count_biblios(), "count_biblios");
   say $result{num_records};
 
   say "\nDefault Marc framework";
-  %result = &_get_marcframework_validation ($result{id});
+  %result = _get_marcframework_validation ($result{id});
 
   say "\nCount records with fields";
-  %result = &_get_count_records_with_fields ($result{id});
+  %result = _get_count_records_with_fields ($result{id});
 
   say "\nCount BnF ARK";
-  %result =  &_query_database_for_count_and_save(&_get_count_ark_bnf, "count_bnf_ark", $result{id});
+  %result =  _query_database_for_count_and_save(_get_count_ark_bnf(), "count_bnf_ark", $result{id});
   say $result{num_records};
 
   say "\nCount PPN";
-  %result = &_query_database_for_count_and_save(&_get_count_ppn_id, "count_sudoc_ppn", $result{id});
+  %result = _query_database_for_count_and_save(_get_count_ppn_id(), "count_sudoc_ppn", $result{id});
   say $result{num_records};
 
   say "\nCount Others 033a";
-  %result = &_query_database_for_count_and_save(&_get_count_others_033a, "count_ids_in_033a", $result{id});
+  %result = _query_database_for_count_and_save(_get_count_others_033a(), "count_ids_in_033a", $result{id});
   say $result{num_records};
 
   say "\nCount aligned Biblios";
-  %result = &_query_database_for_count_and_save(&_get_count_aligned_biblios, "count_aligned_biblios", $result{id});
+  %result = _query_database_for_count_and_save(_get_count_aligned_biblios(), "count_aligned_biblios", $result{id});
   say $result{num_records};
 
 }
@@ -69,12 +69,12 @@ sub _get_marcframework_validation {
     say "183c:" . (defined($check_marcfield_183c) ? $ok : $ko);
     say "219:"  .  (defined($check_marcfield_219) ? $ok : $ko);
 
-    %returns = &_save_data (undef, "check_marcfield_009",  (defined($check_marcfield_009))  , $id);
-    %returns = &_save_data (undef, "check_marcfield_033a", (defined($check_marcfield_033a)) , $returns{id});
-    %returns = &_save_data (undef, "check_marcfield_181c", (defined($check_marcfield_181c)) , $returns{id});
-    %returns = &_save_data (undef, "check_marcfield_182c", (defined($check_marcfield_182c)) , $returns{id});
-    %returns = &_save_data (undef, "check_marcfield_183c", (defined($check_marcfield_183c)) , $returns{id});
-    %returns = &_save_data (undef, "check_marcfield_219",  (defined($check_marcfield_219))  , $returns{id});
+    %returns = _save_data (undef, "check_marcfield_009",  (defined($check_marcfield_009))  , $id);
+    %returns = _save_data (undef, "check_marcfield_033a", (defined($check_marcfield_033a)) , $returns{id});
+    %returns = _save_data (undef, "check_marcfield_181c", (defined($check_marcfield_181c)) , $returns{id});
+    %returns = _save_data (undef, "check_marcfield_182c", (defined($check_marcfield_182c)) , $returns{id});
+    %returns = _save_data (undef, "check_marcfield_183c", (defined($check_marcfield_183c)) , $returns{id});
+    %returns = _save_data (undef, "check_marcfield_219",  (defined($check_marcfield_219))  , $returns{id});
 
     return %returns;
 }
@@ -83,9 +83,7 @@ sub _save_data {
   my ( $dbh, $field, $value, $id ) = @_;
   my %returns;
 
-  if (!defined $dbh) {
-    $dbh = C4::Context->dbh;
-  }
+  $dbh = C4::Context->dbh;
   if (defined $id) {
     $dbh->do( "UPDATE $table SET $field = '$value' WHERE audit_id= '$id'" );
     $returns{id} = $id;
@@ -259,7 +257,7 @@ sub _get_count_records_with_fields {
     $returns{id} = $id;
   }
   foreach my $value (keys %$marc_ref) {
-    %returns = &_save_data (
+    %returns = _save_data (
       $dbh,
       $marc_ref->{$value}->{"column"},
       $marc_ref->{$value}->{"count"},
@@ -271,4 +269,4 @@ sub _get_count_records_with_fields {
 
 }
 
-&check_for_audit;
+check_for_audit();
