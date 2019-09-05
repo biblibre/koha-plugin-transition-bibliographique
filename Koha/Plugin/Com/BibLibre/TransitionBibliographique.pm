@@ -6,7 +6,7 @@ use Modern::Perl;
 
 use Encode;
 use JSON;
-use List::MoreUtils qw(first_index any);
+use List::MoreUtils qw(first_index any none);
 use Text::CSV::Encoded;
 use YAML qw(LoadFile);
 
@@ -219,6 +219,22 @@ sub import_validate_form {
     my $file = $cgi->param('file');
     if (!$file) {
         push @errors, "Aucun fichier sélectionné";
+    }
+
+    my $fh = $cgi->upload('file');
+    my $csv = Text::CSV::Encoded->new({ encoding => 'utf8' });
+    my $line = <$fh>;
+    seek $fh, 0, 0;
+    $csv->parse($line);
+    my @columns = $csv->fields();
+
+    my $id_column_name = $cgi->param('id_column_name');
+    my $external_id_column_name = $cgi->param('external_id_column_name');
+    if (none { $_ eq $id_column_name } @columns) {
+        push @errors, "Cette colonne n'existe pas dans le fichier CSV: $id_column_name (colonnes disponibles: " . join (', ', @columns) . ")";
+    }
+    if (none { $_ eq $external_id_column_name } @columns) {
+        push @errors, "Cette colonne n'existe pas dans le fichier CSV: $external_id_column_name (colonnes disponibles: " . join (', ', @columns) . ")";
     }
 
     my $type = $cgi->param('type');
