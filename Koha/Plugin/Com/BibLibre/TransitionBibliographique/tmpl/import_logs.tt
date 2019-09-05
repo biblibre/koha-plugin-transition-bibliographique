@@ -24,7 +24,6 @@
 
         <div class="col-sm-2 col-sm-pull-10">
             <ul>
-                <li><a href="/cgi-bin/koha/plugins/run.pl?class=Koha%3A%3APlugin%3A%3ACom%3A%3ABibLibre%3A%3ATransitionBibliographique&method=tool&op=export">Export</a></li>
                 <li><a href="/cgi-bin/koha/plugins/run.pl?class=Koha%3A%3APlugin%3A%3ACom%3A%3ABibLibre%3A%3ATransitionBibliographique&method=tool&op=import">Import</a></li>
             </ul>
         </div>

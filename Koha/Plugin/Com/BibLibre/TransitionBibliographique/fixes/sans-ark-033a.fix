@@ -1,9 +1,0 @@
-# title: Sans ARK en 033$a
-# description: Garde les notices sans ARK en 033$a
-
-if marc_match(033,'.*ark*.')
-  reject()
-else
-
-end
-

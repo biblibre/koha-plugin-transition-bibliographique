@@ -1,9 +1,0 @@
-# title: Sans valeur en 009
-# description: Garde les notices sans 009
-
-if marc_match(009,'.*.')
-  reject()
-else
-
-end
-
