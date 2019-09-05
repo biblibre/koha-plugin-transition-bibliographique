@@ -1,14 +1,12 @@
 # Plugin Transition Bibliographique pour Koha
 
-Ce plugin vise à faciliter l'export et l'import de données dans Koha pour la
+Ce plugin vise à faciliter l'import de données dans Koha pour la
 transition bibliographique
 
 # Pré-requis
 
 - Koha 18.11 minimum
 - Modules Perl:
-  - [Catmandu](https://metacpan.org/pod/Catmandu)
-  - [Catmandu::MARC](https://metacpan.org/pod/Catmandu::MARC)
   - YAML
 
 # Installation
@@ -21,12 +19,10 @@ transition bibliographique
    `Koha/Plugin/Com/BibLibre/TransitionBibliographique/config.yaml.sample`
    vers `Koha/Plugin/Com/BibLibre/TransitionBibliographique/config.yaml`
 4. Si besoin, modifier `config.yaml`
-5. Mettre `Koha/Plugin/Com/BibLibre/TransitionBibliographique/cron/export.pl`
-   en cronjob et lancer manuellement le script une première fois.
-6. Mettre
+5. Mettre
    `Koha/Plugin/Com/BibLibre/TransitionBibliographique/cron/job-runner.pl`
    en cronjob.
-7. (Optionnel) Mettre
+6. (Optionnel) Mettre
    `Koha/Plugin/Com/BibLibre/TransitionBibliographique/cron/purge.pl` en
    cronjob
 
@@ -42,7 +38,6 @@ PERL5LIB=/path/to/koha
 KOHA_CONF=/path/to/koha-conf.xml
 PATH_TO_PLUGIN=/path/to/plugin
 
-0 22 * * * $PATH_TO_PLUGIN/Koha/Plugin/Com/BibLibre/TransitionBibliographique/cron/export.pl
 50 22 * * * $PATH_TO_PLUGIN/Koha/Plugin/Com/BibLibre/TransitionBibliographique/cron/purge.pl --older-than=30
 0 23 * * * $PATH_TO_PLUGIN/Koha/Plugin/Com/BibLibre/TransitionBibliographique/cron/job-runner.pl
 ```
