@@ -57,9 +57,9 @@
                     <label for="identifier_format">Formatage des identifiants</label>
                     <select class="form-control" id="identifier_format" name="identifier_format">
                         [% identifier_format = CGI.param('identifier_format') %]
+                        <option value="uri" [% IF identifier_format == 'uri' %]selected[% END %]>Convertir au format URI</option>
                         <option value="">Conserver la valeur originale</option>
                         <option value="clean" [% IF identifier_format == 'clean' %]selected[% END %]>Nettoyer</option>
-                        <option value="uri" [% IF identifier_format == 'uri' %]selected[% END %]>Convertir au format URI</option>
                     </select>
                     <span class="help-block">Seuls les identifiants ajoutés seront formattés. Les identifiants existants resteront inchangés.</span>
                 </div>
