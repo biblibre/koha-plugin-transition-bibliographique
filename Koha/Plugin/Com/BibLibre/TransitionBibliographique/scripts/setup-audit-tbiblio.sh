@@ -11,12 +11,14 @@ mysql -e "
       check_marcfield_181c tinyint(1) NOT NULL,
       check_marcfield_182c tinyint(1) NOT NULL,
       check_marcfield_183c tinyint(1) NOT NULL,
+      check_marcfield_214  tinyint(1)  NOT NULL,
       check_marcfield_219  tinyint(1)  NOT NULL,
       count_marcfield_009  int(11) NOT NULL, -- nombre de 009 renseignés
       count_marcfield_033a int(11) NOT NULL,
       count_marcfield_181c int(11) NOT NULL,
       count_marcfield_182c int(11) NOT NULL,
       count_marcfield_183c int(11) NOT NULL,
+      count_marcfield_214  int(11) NOT NULL,
       count_marcfield_219  int(11) NOT NULL,
       count_bnf_ark        int(11) NOT NULL, -- nombre de notices avec un ARK BnF (en 033a)
       count_sudoc_ppn      int(11) NOT NULL, -- nombre de notices avec un PPN Abes (en 009 ou 033a)
