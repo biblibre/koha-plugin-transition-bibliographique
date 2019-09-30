@@ -81,6 +81,7 @@ Nettoyer
 Convertir au format URI
 * Ajoute  https://catalogue.bnf.fr/ devant ark:/12148/xy***********
 * Transforme  PPN*********  en http://www.sudoc.fr/*********
+* Si le catalogue contient déjà les identifiants "sans URI", les champs ne seront pas remplacés.
 
 Après l'exécution du script, l'utilisateur pourra voir les logs de chaque traitement exécuté :
 * Visualiser le nombre de notices mises à jour avec succès
