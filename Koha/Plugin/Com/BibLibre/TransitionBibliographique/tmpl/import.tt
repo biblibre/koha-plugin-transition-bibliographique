@@ -59,7 +59,7 @@
                         [% identifier_format = CGI.param('identifier_format') %]
                         <option value="uri" [% IF identifier_format == 'uri' %]selected[% END %]>Convertir au format URI</option>
                         <option value="">Conserver la valeur originale</option>
-                        <option value="clean" [% IF identifier_format == 'clean' %]selected[% END %]>Nettoyer</option>
+                        <!--option value="clean" [% IF identifier_format == 'clean' %]selected[% END %]>Nettoyer</option-->
                     </select>
                     <span class="help-block">Seuls les identifiants ajoutés seront formattés. Les identifiants existants resteront inchangés.</span>
                 </div>
