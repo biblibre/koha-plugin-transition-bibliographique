@@ -91,6 +91,8 @@ trouvées)
 
 ## Points de vigilance
 
+* Avant de télécharger le fichier CSV sur le serveur, pensez à bien choisir le format des identifiants que vous allez importer: avec URI ou sans
+
 * Avant de télécharger le fichier csv sur le serveur, penser à vérifier le nom des colonnes et le format de ce dernier
 
 OK
