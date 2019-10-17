@@ -7,14 +7,20 @@ mysql -e "
       audit_id int(11) NOT NULL AUTO_INCREMENT,
       timestamp timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP, -- date d exécution de l audit
       check_marcfield_009  tinyint(1) NOT NULL, -- presence du 009
+      check_marcfield_010a tinyint(1) NOT NULL,
+      check_marcfield_011a tinyint(1) NOT NULL,
       check_marcfield_033a tinyint(1) NOT NULL,
+      check_marcfield_073a tinyint(1) NOT NULL,
       check_marcfield_181c tinyint(1) NOT NULL,
       check_marcfield_182c tinyint(1) NOT NULL,
       check_marcfield_183c tinyint(1) NOT NULL,
       check_marcfield_214  tinyint(1)  NOT NULL,
       check_marcfield_219  tinyint(1)  NOT NULL,
       count_marcfield_009  int(11) NOT NULL, -- nombre de 009 renseignés
+      count_marcfield_010a int(11) NOT NULL,
+      count_marcfield_011a int(11) NOT NULL,
       count_marcfield_033a int(11) NOT NULL,
+      count_marcfield_073a int(11) NOT NULL,
       count_marcfield_181c int(11) NOT NULL,
       count_marcfield_182c int(11) NOT NULL,
       count_marcfield_183c int(11) NOT NULL,

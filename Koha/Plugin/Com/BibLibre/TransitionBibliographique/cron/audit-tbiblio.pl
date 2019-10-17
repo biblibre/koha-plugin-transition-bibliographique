@@ -56,7 +56,10 @@ sub _get_marcframework_validation {
     my $ko = "\033[31;1mx\033[0m";
 
     my $check_marcfield_009  = $marcstructure->{'009'};
+    my $check_marcfield_033a = $marcstructure->{'010'}->{'a'};
+    my $check_marcfield_033a = $marcstructure->{'011'}->{'a'};
     my $check_marcfield_033a = $marcstructure->{'033'}->{'a'};
+    my $check_marcfield_033a = $marcstructure->{'073'}->{'a'};
     my $check_marcfield_181c = $marcstructure->{'181'}->{'c'};
     my $check_marcfield_182c = $marcstructure->{'182'}->{'c'};
     my $check_marcfield_183c = $marcstructure->{'183'}->{'c'};
@@ -64,7 +67,10 @@ sub _get_marcframework_validation {
     my $check_marcfield_219  = $marcstructure->{'219'};
 
     say "009:"  .  (defined($check_marcfield_009) ? $ok : $ko);
+    say "010a:" . (defined($check_marcfield_010a) ? $ok : $ko);
+    say "011a:" . (defined($check_marcfield_011a) ? $ok : $ko);
     say "033a:" . (defined($check_marcfield_033a) ? $ok : $ko);
+    say "073a:" . (defined($check_marcfield_073a) ? $ok : $ko);
     say "181c:" . (defined($check_marcfield_181c) ? $ok : $ko);
     say "182c:" . (defined($check_marcfield_182c) ? $ok : $ko);
     say "183c:" . (defined($check_marcfield_183c) ? $ok : $ko);
@@ -72,7 +78,10 @@ sub _get_marcframework_validation {
     say "219:"  .  (defined($check_marcfield_219) ? $ok : $ko);
 
     %returns = _save_data (undef, "check_marcfield_009",  (defined($check_marcfield_009))  , $id);
+    %returns = _save_data (undef, "check_marcfield_010a", (defined($check_marcfield_010a)) , $returns{id});
+    %returns = _save_data (undef, "check_marcfield_011a", (defined($check_marcfield_011a)) , $returns{id});
     %returns = _save_data (undef, "check_marcfield_033a", (defined($check_marcfield_033a)) , $returns{id});
+    %returns = _save_data (undef, "check_marcfield_073a", (defined($check_marcfield_073a)) , $returns{id});
     %returns = _save_data (undef, "check_marcfield_181c", (defined($check_marcfield_181c)) , $returns{id});
     %returns = _save_data (undef, "check_marcfield_182c", (defined($check_marcfield_182c)) , $returns{id});
     %returns = _save_data (undef, "check_marcfield_183c", (defined($check_marcfield_183c)) , $returns{id});
@@ -189,11 +198,29 @@ sub _get_count_records_with_fields {
   my %returns;
 
   my $marc_ref = {
+    '010a' => {
+      field => '010',
+      subfield => 'a',
+      count => undef,
+      column => 'count_marcfield_010a'
+    },
+    '011a' => {
+      field => '011',
+      subfield => 'a',
+      count => undef,
+      column => 'count_marcfield_011a'
+    },
     '033a' => {
       field => '033',
       subfield => 'a',
       count => undef,
       column => 'count_marcfield_033a'
+    },
+    '073a' => {
+      field => '073',
+      subfield => 'a',
+      count => undef,
+      column => 'count_marcfield_073a'
     },
     '181c' => {
       field => '181',
