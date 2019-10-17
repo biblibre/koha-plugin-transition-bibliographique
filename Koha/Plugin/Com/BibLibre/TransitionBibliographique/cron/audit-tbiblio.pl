@@ -56,10 +56,10 @@ sub _get_marcframework_validation {
     my $ko = "\033[31;1mx\033[0m";
 
     my $check_marcfield_009  = $marcstructure->{'009'};
-    my $check_marcfield_033a = $marcstructure->{'010'}->{'a'};
-    my $check_marcfield_033a = $marcstructure->{'011'}->{'a'};
+    my $check_marcfield_010a = $marcstructure->{'010'}->{'a'};
+    my $check_marcfield_011a = $marcstructure->{'011'}->{'a'};
     my $check_marcfield_033a = $marcstructure->{'033'}->{'a'};
-    my $check_marcfield_033a = $marcstructure->{'073'}->{'a'};
+    my $check_marcfield_073a = $marcstructure->{'073'}->{'a'};
     my $check_marcfield_181c = $marcstructure->{'181'}->{'c'};
     my $check_marcfield_182c = $marcstructure->{'182'}->{'c'};
     my $check_marcfield_183c = $marcstructure->{'183'}->{'c'};
