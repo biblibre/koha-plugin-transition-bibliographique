@@ -18,6 +18,8 @@ transition bibliographique
 
 # Installation
 
+## Plugin Koha
+
 1. Récupérer [la dernière version du
    plugin](https://github.com/biblibre/koha-plugin-transition-bibliographique/releases/latest)
    (fichier .kpz)
@@ -32,6 +34,14 @@ transition bibliographique
 6. (Optionnel) Mettre
    `Koha/Plugin/Com/BibLibre/TransitionBibliographique/cron/purge.pl` en
    cronjob
+
+## Audit v1
+
+1. idem que pour le plugin Koha
+2. Lancer `Koha/Plugin/Com/BibLibre/TransitionBibliographique/scripts/setup-audit-tbiblio.sh` pour créer la table des métriques
+3. Mettre
+   `Koha/Plugin/Com/BibLibre/TransitionBibliographique/cron/audit-tbiblio.pl`
+   en cronjob (ou le lancer manuellement)
 
 # Cronjobs
 
