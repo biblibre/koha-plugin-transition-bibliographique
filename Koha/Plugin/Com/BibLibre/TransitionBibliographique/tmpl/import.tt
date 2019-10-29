@@ -110,7 +110,8 @@
                                         <button type="button" class="btn btn-xs btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Action <span class="caret"></span>
                                         </button>
                                         <ul class="dropdown-menu">
-                                            <li><a href="/cgi-bin/koha/plugins/run.pl?class=[% CLASS %]&method=[% METHOD %]&op=import_logs&job_id=[% job.id %]">View logs</a></li>
+                                            <li><a href="/cgi-bin/koha/plugins/run.pl?class=[% CLASS %]&method=[% METHOD %]&op=import_logs&job_id=[% job.id %]&type=success">Voir les succès</a></li>
+                                            <li><a href="/cgi-bin/koha/plugins/run.pl?class=[% CLASS %]&method=[% METHOD %]&op=import_logs&job_id=[% job.id %]&type=error">Voir les erreurs</a></li>
                                         </ul>
                                     </div>
                                 </td>

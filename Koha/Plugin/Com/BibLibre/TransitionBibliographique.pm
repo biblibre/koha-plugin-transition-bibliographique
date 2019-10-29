@@ -49,9 +49,14 @@ sub install {
     my $dbh = C4::Context->dbh;
 
     my $jobs_table = $self->get_qualified_table_name('jobs');
+    my $jobs_logs_table = $self->get_qualified_table_name('jobs_logs');
+    $dbh->do(qq{
+        DROP TABLE IF EXISTS $jobs_logs_table
+    });
     $dbh->do(qq{
         DROP TABLE IF EXISTS $jobs_table
     });
+
     $dbh->do(qq{
         CREATE TABLE $jobs_table (
             id SERIAL,
@@ -64,15 +69,12 @@ sub install {
         )
     });
 
-    my $jobs_logs_table = $self->get_qualified_table_name('jobs_logs');
-    $dbh->do(qq{
-        DROP TABLE IF EXISTS $jobs_logs_table
-    });
     $dbh->do(qq{
         CREATE TABLE $jobs_logs_table (
             id SERIAL,
             job_id BIGINT UNSIGNED NOT NULL,
             logged_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            type VARCHAR(255) NULL DEFAULT NULL,
             message TEXT,
             PRIMARY KEY (id),
             CONSTRAINT jobs_logs_fk_job_id
@@ -149,18 +151,21 @@ sub import_logs_action {
 
     my $cgi = $self->{cgi};
     my $job_id = $cgi->param('job_id');
+    my $type = $cgi->param('type');
 
     my $dbh = C4::Context->dbh;
     my $jobs_logs_table = $self->get_qualified_table_name('jobs_logs');
     my $job_logs = $dbh->selectall_arrayref(qq{
         SELECT * FROM $jobs_logs_table
         WHERE job_id = ?
+    } . ($type ? 'AND (type = ? OR type IS NULL)' : '') . qq{
         ORDER BY logged_at ASC
-    }, { Slice => {} }, $job_id);
+    }, { Slice => {} }, $job_id, $type);
 
     $template->param(
         job_id => $job_id,
         job_logs => $job_logs,
+        type => $type,
     );
 
     return $self->output_html( $template->output() );
@@ -293,14 +298,14 @@ sub import_validate_form {
 }
 
 sub job_log {
-    my ($self, $job, $message) = @_;
+    my ($self, $job, $message, $type) = @_;
 
     my $dbh = C4::Context->dbh;
     my $jobs_logs_table = $self->get_qualified_table_name('jobs_logs');
     $dbh->do(qq{
-        INSERT INTO $jobs_logs_table (job_id, message)
-        VALUES (?, ?)
-    }, undef, $job->{id}, $message);
+        INSERT INTO $jobs_logs_table (job_id, message, type)
+        VALUES (?, ?, ?)
+    }, undef, $job->{id}, $message, $type);
 }
 
 sub execute_jobs {
@@ -322,7 +327,7 @@ sub execute_jobs {
             };
             if ($@) {
                 say STDERR "Error: " . $@;
-                $self->job_log($job, "Erreur pendant le traitement : " . $@);
+                $self->job_log($job, "Erreur pendant le traitement : " . $@, 'error');
                 $self->error_job($job);
             }
         }
@@ -427,33 +432,57 @@ sub execute_job {
         $csv->parse($line);
         my @fields = $csv->fields();
         my $id = $fields[$id_idx];
-        my $external_id = $fields[$external_id_idx];
+        my $external_ids = $fields[$external_id_idx];
 
-        my $clean_identifier = $self->clean_identifier($external_id);
+        my @external_ids = split /,/, $external_ids;
+        my @arks = grep m|ark:/|, @external_ids;
+        if (@arks > 1) {
+            $self->job_log($job, "Plusieurs identifiants ARK pour la notice $id (ligne $linenumber)", 'error');
+            next;
+        }
+
         my $marc_record = $self->get_marc_record($type, $id);
         if ($marc_record) {
-            my @fields = $marc_record->field($tag);
-            my $field = grep {
-                any { $self->clean_identifier($_) eq $clean_identifier } $_->subfield($code);
-            } @fields;
-            if ($field) {
-                $self->job_log($job, "Identifiant déjà présent pour la notice $id (ligne $linenumber)");
-                $already_uptodate++;
-            } else {
-                my $formatted_identifier = $self->format_identifier($external_id, $identifier_format);
-                if ($formatted_identifier) {
-                    $marc_record->insert_fields_ordered(
-                        MARC::Field->new($tag, '', '', $code => $formatted_identifier),
-                    );
-                    $self->save_marc_record($type, $id, $marc_record);
-                    $self->job_log($job, "Identifiant ajouté pour la notice $id (ligne $linenumber)");
-                    $updated++;
+            my $was_updated = 0;
+            my $was_alreadyuptodate = 0;
+            foreach my $external_id (@external_ids) {
+                my $clean_identifier = $self->clean_identifier($external_id);
+                my @fields = $marc_record->field($tag);
+                my $field = grep {
+                    any { $self->clean_identifier($_) eq $clean_identifier } $_->subfield($code);
+                } @fields;
+                if ($field) {
+                    $self->job_log($job, "Identifiant déjà présent pour la notice $id (ligne $linenumber)", 'success');
+                    $was_alreadyuptodate = 1;
                 } else {
-                    $self->job_log($job, "Impossible de formatter l'identifiant, format non reconnu : $external_id");
+                    my $ark_field = grep {
+                        any { $_ =~ m|ark:/| } $_->subfield($code);
+                    } @fields;
+                    if ($ark_field && $clean_identifier =~ m|ark:/|) {
+                        $self->job_log($job, "Un identifiant ARK différent est déjà présent dans la notice $id (ligne $linenumber)", 'error');
+                    } else {
+                        my $formatted_identifier = $self->format_identifier($external_id, $identifier_format);
+                        if ($formatted_identifier) {
+                            $marc_record->insert_fields_ordered(
+                                MARC::Field->new($tag, '', '', $code => $formatted_identifier),
+                            );
+                            $self->save_marc_record($type, $id, $marc_record);
+                            $self->job_log($job, "Identifiant ajouté pour la notice $id (ligne $linenumber)", 'success');
+                            $was_updated = 1;
+                        } else {
+                            $self->job_log($job, "Impossible de formatter l'identifiant, format non reconnu : $external_id", 'error');
+                        }
+                    }
                 }
             }
+            if ($was_updated) {
+                $updated++;
+            }
+            if ($was_alreadyuptodate) {
+                $already_uptodate++;
+            }
         } else {
-            $self->job_log($job, "Notice $id introuvable (ligne $linenumber)");
+            $self->job_log($job, "Notice $id introuvable (ligne $linenumber)", 'error');
             $notfound++;
         }
 
