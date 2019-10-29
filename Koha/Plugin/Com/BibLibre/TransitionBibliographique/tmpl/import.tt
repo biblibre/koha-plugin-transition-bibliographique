@@ -95,7 +95,7 @@
                                 <td>[% job.args.original_filename %]</td>
                                 <td>
                                     [% SWITCH job.state %]
-                                        [% CASE 'inactive' %]inactif
+                                        [% CASE 'inactive' %]en attente
                                         [% CASE 'active' %]actif
                                         [% CASE 'error' %]erreur
                                         [% CASE 'finished' %]terminé
