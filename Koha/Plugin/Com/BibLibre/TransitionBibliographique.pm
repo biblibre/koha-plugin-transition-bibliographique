@@ -3,6 +3,7 @@ package Koha::Plugin::Com::BibLibre::TransitionBibliographique;
 use base qw(Koha::Plugins::Base);
 
 use Modern::Perl;
+use utf8;
 
 use Encode;
 use JSON;
@@ -222,19 +223,36 @@ sub import_validate_form {
     }
 
     my $fh = $cgi->upload('file');
-    my $csv = Text::CSV::Encoded->new({ encoding => 'utf8' });
     my $line = <$fh>;
     seek $fh, 0, 0;
-    $csv->parse($line);
-    my @columns = $csv->fields();
 
-    my $id_column_name = $cgi->param('id_column_name');
-    my $external_id_column_name = $cgi->param('external_id_column_name');
-    if (none { $_ eq $id_column_name } @columns) {
-        push @errors, "Cette colonne n'existe pas dans le fichier CSV: $id_column_name (colonnes disponibles: " . join (', ', @columns) . ")";
+    # Try to guess the separator. We know there should be at least 2 columns
+    my $sep_char;
+    foreach my $separator (',', ';', ':', '|', "\t", ' ') {
+        my $csv = Text::CSV::Encoded->new({ encoding => 'utf8', sep_char => $separator });
+        $csv->parse($line);
+        my @columns = $csv->fields();
+        if (@columns > 1) {
+            $sep_char = $separator;
+            last;
+        }
     }
-    if (none { $_ eq $external_id_column_name } @columns) {
-        push @errors, "Cette colonne n'existe pas dans le fichier CSV: $external_id_column_name (colonnes disponibles: " . join (', ', @columns) . ")";
+
+    if (defined $sep_char) {
+        my $csv = Text::CSV::Encoded->new({ encoding => 'utf8', sep_char => $sep_char });
+        $csv->parse($line);
+        my @columns = $csv->fields();
+
+        my $id_column_name = $cgi->param('id_column_name');
+        my $external_id_column_name = $cgi->param('external_id_column_name');
+        if (none { $_ eq $id_column_name } @columns) {
+            push @errors, "Cette colonne n'existe pas dans le fichier CSV: $id_column_name (colonnes disponibles: [" . join ('], [', @columns) . "])";
+        }
+        if (none { $_ eq $external_id_column_name } @columns) {
+            push @errors, "Cette colonne n'existe pas dans le fichier CSV: $external_id_column_name (colonnes disponibles: " . join (', ', @columns) . ")";
+        }
+    } else {
+        push @errors, "Impossible de deviner le séparateur de colonne. Ce doit être une virgule, un point-virgule, des deux points, une barre verticale (pipe), une tabulation ou un espace. Le CSV doit contenir au moins 2 colonnes";
     }
 
     my $type = $cgi->param('type');
@@ -367,8 +385,25 @@ sub execute_job {
     $self->start_job($job);
 
     open my $fh, '<:encoding(UTF-8)', $filepath or die "Cannot open $filepath: $!";
-    my $csv = Text::CSV::Encoded->new({ encoding => 'utf8' });
     my $line = <$fh>;
+
+    # Try to guess the separator. We know there should be at least 2 columns
+    my $sep_char;
+    foreach my $separator (',', ';', ':', '|', "\t", ' ') {
+        my $csv = Text::CSV::Encoded->new({ encoding => 'utf8', sep_char => $separator });
+        $csv->parse($line);
+        my @columns = $csv->fields();
+        if (@columns > 1) {
+            $sep_char = $separator;
+            last;
+        }
+    }
+
+    unless (defined $sep_char) {
+        die "Impossible de deviner le séparateur de colonne. Ce doit être une virgule, un point-virgule, des deux points, une barre verticale (pipe), une tabulation ou un espace. Le CSV doit contenir au moins 2 colonnes";
+    }
+
+    my $csv = Text::CSV::Encoded->new({ encoding => 'utf8', sep_char => $sep_char });
     $csv->parse($line);
     my @columns = $csv->fields();
 
