@@ -234,7 +234,7 @@ sub import_validate_form {
     # Try to guess the separator. We know there should be at least 2 columns
     my $sep_char;
     foreach my $separator (',', ';', ':', '|', "\t", ' ') {
-        my $csv = Text::CSV::Encoded->new({ encoding => 'utf8', sep_char => $separator });
+        my $csv = Text::CSV::Encoded->new({ sep_char => $separator });
         $csv->parse($line);
         my @columns = $csv->fields();
         if (@columns > 1) {
@@ -244,7 +244,7 @@ sub import_validate_form {
     }
 
     if (defined $sep_char) {
-        my $csv = Text::CSV::Encoded->new({ encoding => 'utf8', sep_char => $sep_char });
+        my $csv = Text::CSV::Encoded->new({ sep_char => $sep_char });
         $csv->parse($line);
         my @columns = $csv->fields();
 
@@ -395,7 +395,7 @@ sub execute_job {
     # Try to guess the separator. We know there should be at least 2 columns
     my $sep_char;
     foreach my $separator (',', ';', ':', '|', "\t", ' ') {
-        my $csv = Text::CSV::Encoded->new({ encoding => 'utf8', sep_char => $separator });
+        my $csv = Text::CSV::Encoded->new({ sep_char => $separator });
         $csv->parse($line);
         my @columns = $csv->fields();
         if (@columns > 1) {
@@ -408,7 +408,7 @@ sub execute_job {
         die "Impossible de deviner le séparateur de colonne. Ce doit être une virgule, un point-virgule, des deux points, une barre verticale (pipe), une tabulation ou un espace. Le CSV doit contenir au moins 2 colonnes";
     }
 
-    my $csv = Text::CSV::Encoded->new({ encoding => 'utf8', sep_char => $sep_char });
+    my $csv = Text::CSV::Encoded->new({ sep_char => $sep_char });
     $csv->parse($line);
     my @columns = $csv->fields();
 
