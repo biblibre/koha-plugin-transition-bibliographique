@@ -440,7 +440,7 @@ sub execute_job {
             $self->job_log($job, "Plusieurs identifiants ARK pour la notice $id (ligne $linenumber)", 'error');
             next;
         }
-        my @ppns = grep m|^\d{8}[\dX]$|, @external_ids;
+        my @ppns = grep m|PPN\d{8}[\dX]|, @external_ids;
         if (@ppns > 1) {
             $self->job_log($job, "Plusieurs identifiants PPN pour la notice $id (ligne $linenumber)", 'error');
             next;
