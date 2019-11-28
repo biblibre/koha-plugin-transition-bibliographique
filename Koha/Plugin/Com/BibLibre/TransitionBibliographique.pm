@@ -440,6 +440,11 @@ sub execute_job {
             $self->job_log($job, "Plusieurs identifiants ARK pour la notice $id (ligne $linenumber)", 'error');
             next;
         }
+        my @ppns = grep m|^\d{8}[\dX]$|, @external_ids;
+        if (@ppns > 1) {
+            $self->job_log($job, "Plusieurs identifiants PPN pour la notice $id (ligne $linenumber)", 'error');
+            next;
+        }
 
         my $marc_record = $self->get_marc_record($type, $id);
         if ($marc_record) {
@@ -461,7 +466,7 @@ sub execute_job {
                     if ($ark_field && $clean_identifier =~ m|ark:/|) {
                         $self->job_log($job, "Un identifiant ARK différent est déjà présent dans la notice $id (ligne $linenumber)", 'error');
                     } else {
-                        my $formatted_identifier = $self->format_identifier($external_id, $identifier_format);
+                        my $formatted_identifier = $self->format_identifier($external_id, $identifier_format, $type);
                         if ($formatted_identifier) {
                             $marc_record->insert_fields_ordered(
                                 MARC::Field->new($tag, '', '', $code => $formatted_identifier),
@@ -530,7 +535,7 @@ sub clean_identifier {
 }
 
 sub format_identifier {
-    my ($self, $identifier, $format) = @_;
+    my ($self, $identifier, $format, $type) = @_;
 
     return $identifier unless $format;
 
@@ -543,8 +548,12 @@ sub format_identifier {
         if ($clean_identifier =~ /^ark:/) {
             return 'https://catalogue.bnf.fr/' . $clean_identifier;
         }
-        if ($clean_identifier =~ /^\d{9}$/) {
-            return 'http://www.sudoc.fr/' . $clean_identifier;
+        if ($clean_identifier =~ /^\d{8}[\dX]$/) {
+            if ($type eq 'authority') {
+                return 'http://www.idref.fr/' . $clean_identifier;
+            } else {
+                return 'http://www.sudoc.fr/' . $clean_identifier;
+            }
         }
     }
 }

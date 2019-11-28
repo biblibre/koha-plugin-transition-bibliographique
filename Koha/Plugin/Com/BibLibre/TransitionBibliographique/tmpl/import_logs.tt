@@ -13,8 +13,16 @@
         <div class="col-sm-10 col-sm-push-2">
             [% IF type == 'success' %]
                 <h1>Succès</h1>
+
+                <p>
+                    <a href="/cgi-bin/koha/plugins/run.pl?class=[% CLASS %]&method=[% METHOD %]&op=import_logs&job_id=[% job_id %]&type=error">Voir les erreurs</a>
+                </p>
             [% ELSIF type == 'error' %]
                 <h1>Erreurs</h1>
+
+                <p>
+                    <a href="/cgi-bin/koha/plugins/run.pl?class=[% CLASS %]&method=[% METHOD %]&op=import_logs&job_id=[% job_id %]&type=success">Voir les succès</a>
+                </p>
             [% ELSE %]
                 <h1>Logs</h1>
             [% END %]
