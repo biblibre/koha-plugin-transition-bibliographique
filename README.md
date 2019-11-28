@@ -22,8 +22,8 @@ transition bibliographique
 
 1. Récupérer [la dernière version du
    plugin](https://github.com/biblibre/koha-plugin-transition-bibliographique/releases/latest)
-   (fichier .kpz)
-2. Installer le plugin via l'interface d'administration de Koha
+   (fichier .kpz) ou cloner le dépot du plugin
+2. Installer le plugin via l'interface d'administration de Koha (syspref et koha-conf.xml)
 3. Sur le serveur, copier
    `Koha/Plugin/Com/BibLibre/TransitionBibliographique/config.yaml.sample`
    vers `Koha/Plugin/Com/BibLibre/TransitionBibliographique/config.yaml`
