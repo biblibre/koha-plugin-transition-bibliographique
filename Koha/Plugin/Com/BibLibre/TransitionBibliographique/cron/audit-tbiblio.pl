@@ -1,4 +1,4 @@
-#/usr/bin/env perl
+#!/usr/bin/env perl
 
 use Modern::Perl;
 use C4::Context;
