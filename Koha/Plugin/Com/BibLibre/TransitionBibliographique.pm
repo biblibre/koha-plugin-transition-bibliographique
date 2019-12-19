@@ -446,6 +446,11 @@ sub execute_job {
             next;
         }
 
+        if (@external_ids == 0) {
+            $self->job_log($job, "Aucun identifiant externe pour la notice $id (ligne $linenumber)", 'error');
+            next;
+        }
+
         my $marc_record = $self->get_marc_record($type, $id);
         if ($marc_record) {
             my $was_updated = 0;
