@@ -159,7 +159,7 @@ sub import_logs_action {
         SELECT * FROM $jobs_logs_table
         WHERE job_id = ?
     } . ($type ? 'AND (type = ? OR type IS NULL)' : '') . qq{
-        ORDER BY logged_at ASC
+        ORDER BY id ASC
     }, { Slice => {} }, $job_id, $type);
 
     $template->param(
