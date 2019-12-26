@@ -16,3 +16,17 @@ Suite de la documentation:
 Ce plugin a été initialement commandé par l'association [Kohala](http://koha-fr.org/) et développé par [BibLibre](http://biblibre.com/). Il est sous [licence libre](../LICENSE).
 
 Pour accéder au plugin, rendez vous sur: Outils > Outil de Plugins >  Bouton "Lancer l'outil" (du dit plugin)
+
+## Une démo en vidéo
+
+### Export de données avec Koha formattées pour Bibliostratus
+
+[![Alt text](https://img.youtube.com/vi/DuLtvby6CR4/0.jpg)](https://www.youtube.com/watch?v=DuLtvby6CR4)
+
+### Exemple d'utilisation de Bibliostratus pour l'alignement
+
+[![Alt text](https://img.youtube.com/vi/k2lwiyoHi9U/0.jpg)](https://www.youtube.com/watch?v=k2lwiyoHi9U)
+
+### Import des données dans Koha
+
+[![Alt text](https://img.youtube.com/vi/iFkCEKJKXVY/0.jpg)](https://www.youtube.com/watch?v=iFkCEKJKXVY4)
