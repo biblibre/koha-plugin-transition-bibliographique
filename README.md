@@ -7,7 +7,7 @@ transition bibliographique
 
 [Index de la documentation fonctionnelle](doc/)
 
-![Plugin - outil d'import](doc/images/koha-plugin-tb-import.png)
+![Plugin - accueil de l'outil](doc/images/koha-plugin-tb.png)
 
 
 # Pré-requis
