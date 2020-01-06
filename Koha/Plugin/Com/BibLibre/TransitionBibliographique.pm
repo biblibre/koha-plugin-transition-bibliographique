@@ -528,7 +528,7 @@ sub clean_identifier {
     $identifier =~ s/^\s+//;
     $identifier =~ s/\s+$//;
 
-    if ($identifier =~ /^http:/) {
+    if ($identifier =~ /^https?:/) {
         my $uri = URI->new($identifier);
         $identifier = $uri->path;
         $identifier =~ s/^\///;
