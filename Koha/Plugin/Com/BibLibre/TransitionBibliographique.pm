@@ -470,8 +470,13 @@ sub execute_job {
                     my $ark_field = grep {
                         any { $_ =~ m|ark:/| } $_->subfield($code);
                     } @fields;
+                    my $ppn_field = grep {
+                        any { $_ =~ m|\d{8}[\dX]| } $_->subfield($code);
+                    } @fields;
                     if ($ark_field && $clean_identifier =~ m|ark:/|) {
                         $self->job_log($job, "Un identifiant ARK différent est déjà présent dans la notice $id (ligne $linenumber)", 'error');
+                    } elsif ($ppn_field && $clean_identifier =~ m|\d{8}[\dX]|) {
+                        $self->job_log($job, "Un identifiant PPN différent est déjà présent dans la notice $id (ligne $linenumber)", 'error');
                     } else {
                         my $formatted_identifier = $self->format_identifier($external_id, $identifier_format, $type);
                         if ($formatted_identifier) {
