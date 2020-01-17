@@ -2,11 +2,11 @@
 
 Avant le développement de ce plugin, une fois la liste d'identifiants obtenue et validée par le
 bibliothécaire, il n'était pas possible de simplement intégrer ces identifiants dans
-Koha.
+Koha. C'est maintenant possible grace à la fonctionnalité décrite ci-dessous:
 
 ![Plugin - outil d'import](images/koha-plugin-tb-import.png)
 
-## Formulaire
+## Formulaire d'import
 
 Cet outil propose à l'utilisateur de :
 * Télécharger sur le serveur des fichiers CSV contenant les

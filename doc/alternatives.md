@@ -1,4 +1,6 @@
-## Alternatives
+## Alternatives d'export de données
+
+Décrit les possibilités pour extraire de Koha des données afin de les faire passer ensuite directement dans Bibliostratus avec les outils déjà existant dans Koha.
 
 ### Rapport SQL
 
