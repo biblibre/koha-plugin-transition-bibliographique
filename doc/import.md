@@ -24,7 +24,7 @@ Dans votre catalogue:
 035 $a
 ```
 Dans notre exemple
-* le champ 033   $a n'existe pas.
+* le champ 033$a n'existe pas.
 * lechamps 035$a est vide
 
 Le fichier que nous demandons à importer est:
@@ -39,7 +39,7 @@ C'est un fichier de sortie du module d'alignement de Bibliostratus (version avri
 Nous remplissons le formulaire suivant:
 * Fichier: sélectionner le fichier .txt (ou .csv) sur le disque dur
 * Nom de la colonne contenant l'identifiant interne = NumNot
-* Nom de la colonne contenant l'identifiant interne = identifiants
+* Nom de la colonne contenant l'identifiant interne = Liste identifiants trouvés
 * Sous-champs MARC cible = 035$a
 * Formatage des identifiants = Conserver la valeur originale
 
@@ -47,16 +47,16 @@ Nous remplissons le formulaire suivant:
 
 * Vérification de la cohérence des champs de la grille de catalogage
 mentionnés
-  * Le champ MARC XXX n'est pas répétable
-  * Le sous-champ MARC XXX$y n'existe pas dans la grille de catalogage par défaut
+  * Le champ MARC XXX doit être répétable
+  * Le sous-champ MARC XXX$y doit exister dans la grille de catalogage par défaut
 
-* Mise à jour des notices avec la colonne source.
+* Mise à jour des notices avec la colonne source
   * Les imports sont lancés en tache de fond
   * Vous visualiserez leur avancement ainsi que les logs applicatifs après lancement dans le tableau en dessous du formulaire
 
 ![Plugin - outil d'import - liste des traitements](images/koha-plugin-tb-import-traitements.png)
 
-* Si l'identifiant les déjà présent, il ne l'ajoute pas
+* Si l'identifiant est déjà présent, il ne l'ajoute pas
 <pre>
 [2019-04-23 11:51:45] Identifiant déjà présent pour la notice 2 (ligne 2)
 [2019-04-23 11:51:45] Résumé:
@@ -69,31 +69,53 @@ mentionnés
 
 * Si l'identifiant n'est pas de la forme attendue, il ne l'ajoute pas
 <pre>
-[2019-04-23 12:06:55] Format d'identifiant non reconnu : PPN12345678
+[2019-04-23 12:06:55] Impossible de formatter l'identifiant, format non reconnu : PPN12345678
 </pre>
 
-Conserver la valeur originale
-* Comme son nom l'indique, le script prend la valeur présente dans la colonne fournie sans traitement
+## Options de l'import
 
-Nettoyer
+### Conserver la valeur originale
+
+* Comme son nom l'indique, le script prend la valeur présente dans la colonne fournie sans traitement et l'importe
+
+### Nettoyer
+
 * Retire la partie "URL" si elle existe
+* Retire le prefixe "PPN" : "PPN123456789" devient 123456789
 
-Convertir au format URI
+### Convertir au format URI
+
 * Ajoute  https://catalogue.bnf.fr/ devant ark:/12148/xy***********
-* Transforme  PPN*********  en http://www.sudoc.fr/*********
-* Si le catalogue contient déjà les identifiants "sans URI", les champs ne seront pas remplacés. Vous pouvez passer par les modifications par lot si vous souhaitez changer de format.
+* Transforme  PPN*********  en http://www.sudoc.fr/********* si c'est une notice bibliographique et http://www.idref.fr/***
+* Si le catalogue contient déjà les identifiants avec ou sans URI, les champs ne seront pas remplacés. Vous pouvez passer par les modifications par lot si vous souhaitez changer de format. L'identifiant est considéré comme déjà présent. Ce sont les valeurs "sans URI" qui sont comparées pour déclancher cette règle.
+
+### Autres règles
+
+* S'il y a plus d'un ARK ou PPN dans le fichier d'import pour une notice, alors il y a une erreur 
+  * "Plusieurs identifiants ARK pour la notice"
+* Il est possible d'importer pour une notice un ARK et un PPN 
+  * "Identifiant ajouté pour la notice"
+* S'il un ARK est déjà présent dans la notice et qui n'est pas le même que celui que j'importe du fichier, alors une erreur est levée (pareil pour le cas d'un PPN) 
+  * "Un identifiant *** différent est déjà présent dans la notice"
+* Si une forme de l'identifiant est déjà présente dans la notice, l'identifiant n'est pas ajouté et l'import est considéré comme un succès
+  * "Identifiant déjà présent pour la notice"
 
 Après l'exécution du script, l'utilisateur pourra voir les logs de chaque traitement exécuté :
 * Visualiser le nombre de notices mises à jour avec succès
 * Les identifiants des notices qui n'ont pas pu être mises à jour (non
 trouvées)
 * Le nombre de notices mises à jour
+* Le nombre de notices avec identifiant déjà présent
+
+## Fonctionnements
+
+* Le séparateur du fichier est auto déterminé. Le script cherche quel est le séparateur, ainsi l'utilisateur n'a pas à s'en préoccuper. Séparateurs autorisés: "," ";" ":" "|" "<TAB>" " " 
 
 ## Points de vigilance
 
 * Avant de télécharger le fichier CSV sur le serveur, pensez à bien choisir le format des identifiants que vous allez importer: avec URI ou sans
 
-* Avant de télécharger le fichier csv sur le serveur, penser à vérifier le nom des colonnes et le format de ce dernier
+* Avant de télécharger le fichier csv sur le serveur, pensez à vérifier le nom des colonnes et le format de ce dernier
 
 OK
 ```
