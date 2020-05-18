@@ -322,7 +322,7 @@ sub execute_jobs {
     if (@$jobs) {
         foreach my $job (@$jobs) {
             eval {
-                say STDERR "Executing job " . $job->{id};
+                say "Executing job " . $job->{id};
                 $self->execute_job($job);
             };
             if ($@) {
@@ -332,7 +332,7 @@ sub execute_jobs {
             }
         }
     } else {
-        say STDERR "There is no job to execute";
+        say "There is no job to execute";
     }
 }
 
@@ -602,15 +602,15 @@ sub purge {
     });
 
     foreach my $job (@$jobs) {
-        say STDERR "Removing job " . $job->{id};
+        say "Removing job " . $job->{id};
 
         $job->{args} = decode_json($job->{args});
         my $filepath = $job->{args}->{filepath};
 
-        say STDERR "Removing file $filepath";
+        say "Removing file $filepath";
         unlink $filepath or say STDERR "Could not unlink file $filepath: $!";
 
-        say STDERR "Removing database entry";
+        say "Removing database entry";
         $delete_sth->execute($job->{id}) or say STDERR "Could not remove database entry: " . $delete_sth->errstr;
     }
 }
