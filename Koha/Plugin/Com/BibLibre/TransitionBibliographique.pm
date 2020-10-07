@@ -32,6 +32,8 @@ our $metadata = {
     description     => 'This plugin aims to ease data import into catalogue (biblios and authorities)',
 };
 
+my $DEBUG = exists $ENV{'DEBUG'} ? $ENV{'DEBUG'} : 0;
+
 sub new {
     my ( $class, $args ) = @_;
 
@@ -332,7 +334,7 @@ sub execute_jobs {
             }
         }
     } else {
-        say "There is no job to execute";
+        say "There is no job to execute" if $DEBUG ;
     }
 }
 
