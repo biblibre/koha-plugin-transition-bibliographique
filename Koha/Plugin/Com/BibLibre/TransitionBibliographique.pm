@@ -273,7 +273,7 @@ sub import_validate_form {
     }
 
     my $marc_subfield = $cgi->param('marc_subfield');
-    if ($marc_subfield =~ /^\d{3}\$[a-zA-Z0-9]$/) {
+    if ($marc_subfield =~ /^\d{3}\$[a-zA-Z0-9]$/ || $marc_subfield =~ /^00\d$/) {
         my ($tag, $code) = split /\$/, $marc_subfield;
         my $schema = Koha::Database->schema;
         my $tag_rs = $schema->resultset($tag_structure_source_name);
@@ -288,12 +288,14 @@ sub import_validate_form {
             push @errors, "Le champ MARC $tag n'existe pas dans la grille de catalogage par défaut";
         }
 
-        my $subfield_structure = $subfield_rs->find('', $tag, $code);
-        if (!$subfield_structure) {
-            push @errors, "Le sous-champ MARC $tag\$$code n'existe pas dans la grille de catalogage par défaut";
+        if (defined $code) {
+            my $subfield_structure = $subfield_rs->find('', $tag, $code);
+            if (!$subfield_structure) {
+                push @errors, "Le sous-champ MARC $tag\$$code n'existe pas dans la grille de catalogage par défaut";
+            }
         }
     } else {
-        push @errors, "Le sous-champ MARC doit être au format 'XXX\$y'";
+        push @errors, "Le sous-champ MARC doit être au format 'XXX\$y' ou '00X'";
     }
 
     return @errors;
@@ -463,17 +465,17 @@ sub execute_job {
                 my $clean_identifier = $self->clean_identifier($external_id);
                 my @fields = $marc_record->field($tag);
                 my $field = grep {
-                    any { $self->clean_identifier($_) eq $clean_identifier } $_->subfield($code);
+                    any { $self->clean_identifier($_) eq $clean_identifier } (defined $code ? $_->subfield($code) : $_->data());
                 } @fields;
                 if ($field) {
                     $self->job_log($job, "Identifiant déjà présent pour la notice $id (ligne $linenumber)", 'success');
                     $was_alreadyuptodate = 1;
                 } else {
                     my $ark_field = grep {
-                        any { $_ =~ m|ark:/| } $_->subfield($code);
+                        any { $_ =~ m|ark:/| } (defined $code ? $_->subfield($code) : $_->data());
                     } @fields;
                     my $ppn_field = grep {
-                        any { $_ =~ m|\d{8}[\dX]| } $_->subfield($code);
+                        any { $_ =~ m|\d{8}[\dX]| } (defined $code ? $_->subfield($code) : $_->data());
                     } @fields;
                     if ($ark_field && $clean_identifier =~ m|ark:/|) {
                         $self->job_log($job, "Un identifiant ARK différent est déjà présent dans la notice $id (ligne $linenumber)", 'error');
@@ -482,9 +484,10 @@ sub execute_job {
                     } else {
                         my $formatted_identifier = $self->format_identifier($external_id, $identifier_format, $type);
                         if ($formatted_identifier) {
-                            $marc_record->insert_fields_ordered(
-                                MARC::Field->new($tag, '', '', $code => $formatted_identifier),
-                            );
+                            my $new_field = defined $code ?
+                                MARC::Field->new($tag, '', '', $code => $formatted_identifier) :
+                                MARC::Field->new($tag, $formatted_identifier);
+                            $marc_record->insert_fields_ordered($new_field);
                             $self->save_marc_record($type, $id, $marc_record);
                             $self->job_log($job, "Identifiant ajouté pour la notice $id (ligne $linenumber)", 'success');
                             $was_updated = 1;
