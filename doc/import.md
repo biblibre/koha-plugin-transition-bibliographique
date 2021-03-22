@@ -45,10 +45,8 @@ Nous remplissons le formulaire suivant:
 
 ## Règles du script
 
-* Vérification de la cohérence des champs de la grille de catalogage
-mentionnés
-  * Le champ MARC XXX doit être répétable
-  * Le sous-champ MARC XXX$y doit exister dans la grille de catalogage par défaut
+* Vérification de la cohérence des champs de la grille de catalogage mentionnés
+  * Le champ MARC (00X ou XXX$y) doit exister dans la grille de catalogage par défaut
 
 * Mise à jour des notices avec la colonne source
   * Les imports sont lancés en tache de fond
@@ -95,10 +93,12 @@ mentionnés
   * "Plusieurs identifiants ARK pour la notice"
 * Il est possible d'importer pour une notice un ARK et un PPN 
   * "Identifiant ajouté pour la notice"
-* S'il un ARK est déjà présent dans la notice et qui n'est pas le même que celui que j'importe du fichier, alors une erreur est levée (pareil pour le cas d'un PPN) 
+* Si un ARK est déjà présent dans la notice et qui n'est pas le même que celui que j'importe du fichier, alors une erreur est levée (pareil pour le cas d'un PPN)
   * "Un identifiant *** différent est déjà présent dans la notice"
 * Si une forme de l'identifiant est déjà présente dans la notice, l'identifiant n'est pas ajouté et l'import est considéré comme un succès
   * "Identifiant déjà présent pour la notice"
+* Si le champ est répétable, alors un nouveau champ MARC est créé pour ajouter l'identifiant
+* Si le champ n'est pas répétable et qu'il existe dans la notice, le champ existant est conservé et l'identifiant n'est pas ajouté
 
 Après l'exécution du script, l'utilisateur pourra voir les logs de chaque traitement exécuté :
 * Visualiser le nombre de notices mises à jour avec succès

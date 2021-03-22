@@ -280,11 +280,7 @@ sub import_validate_form {
         my $subfield_rs = $schema->resultset($subfield_structure_source_name);
 
         my $tag_structure = $tag_rs->find('', $tag);
-        if ($tag_structure) {
-            if (!$tag_structure->repeatable) {
-                push @errors, "Le champ MARC $tag n'est pas répétable";
-            }
-        } else {
+        if (!$tag_structure) {
             push @errors, "Le champ MARC $tag n'existe pas dans la grille de catalogage par défaut";
         }
 
@@ -482,17 +478,27 @@ sub execute_job {
                     } elsif ($ppn_field && $clean_identifier =~ m|\d{8}[\dX]|) {
                         $self->job_log($job, "Un identifiant PPN différent est déjà présent dans la notice $id (ligne $linenumber)", 'error');
                     } else {
-                        my $formatted_identifier = $self->format_identifier($external_id, $identifier_format, $type);
-                        if ($formatted_identifier) {
-                            my $new_field = defined $code ?
-                                MARC::Field->new($tag, '', '', $code => $formatted_identifier) :
-                                MARC::Field->new($tag, $formatted_identifier);
-                            $marc_record->insert_fields_ordered($new_field);
-                            $self->save_marc_record($type, $id, $marc_record);
-                            $self->job_log($job, "Identifiant ajouté pour la notice $id (ligne $linenumber)", 'success');
-                            $was_updated = 1;
+                        my $schema = Koha::Database->schema;
+                        my $tag_structure_source_name = $type eq 'authority' ? 'AuthTagStructure' : 'MarcTagStructure';
+                        my $tag_rs = $schema->resultset($tag_structure_source_name);
+
+                        my $tag_structure = $tag_rs->find('', $tag);
+                        if ($tag_structure->repeatable || 0 == (() = $marc_record->field($tag))) {
+                            my $formatted_identifier = $self->format_identifier($external_id, $identifier_format, $type);
+                            if ($formatted_identifier) {
+
+                                my $new_field = defined $code ?
+                                    MARC::Field->new($tag, '', '', $code => $formatted_identifier) :
+                                    MARC::Field->new($tag, $formatted_identifier);
+                                $marc_record->insert_fields_ordered($new_field);
+                                $self->save_marc_record($type, $id, $marc_record);
+                                $self->job_log($job, "Identifiant ajouté pour la notice $id (ligne $linenumber)", 'success');
+                                $was_updated = 1;
+                            } else {
+                                $self->job_log($job, "Impossible de formatter l'identifiant, format non reconnu : $external_id", 'error');
+                            }
                         } else {
-                            $self->job_log($job, "Impossible de formatter l'identifiant, format non reconnu : $external_id", 'error');
+                            $self->job_log($job, "Le champ existe déjà dans la notice $id et n'est pas répétable", 'error');
                         }
                     }
                 }
