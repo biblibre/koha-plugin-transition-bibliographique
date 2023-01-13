@@ -1,2 +1,2 @@
 import:
-    upload_path: /home/koha/var/lib/transition-bibliographique/upload
+    upload_path: /tmp
