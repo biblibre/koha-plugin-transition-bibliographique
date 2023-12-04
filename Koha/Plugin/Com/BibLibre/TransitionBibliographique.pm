@@ -11,22 +11,22 @@ use List::MoreUtils qw(first_index any none);
 use Text::CSV::Encoded;
 use YAML qw(LoadFile);
 
-use C4::AuthoritiesMarc;
-use C4::Biblio;
+use C4::AuthoritiesMarc qw(GetAuthority ModAuthority);
+use C4::Biblio qw(GetFrameworkCode ModBiblio);
 use C4::Context;
 
 use Koha::Authorities;
 use Koha::Authority;
 use Koha::Database;
 
-our $VERSION = "0.2.0";
+our $VERSION = "0.3.0";
 
 our $metadata = {
     name            => 'Transition bibliographique',
     author          => 'BibLibre',
     date_authored   => '2019-03-25',
-    date_updated    => "2019-03-25",
-    minimum_version => '18.1100000',
+    date_updated    => "2023-12-04",
+    minimum_version => '20.1100000',
     maximum_version => undef,
     version         => $VERSION,
     description     => 'This plugin aims to ease data import into catalogue (biblios and authorities)',
@@ -587,7 +587,8 @@ sub get_marc_record {
     my $marc_record;
 
     if ($type eq 'biblio') {
-        $marc_record = C4::Biblio::GetMarcBiblio({ biblionumber => $id });
+        my $biblio = Koha::Biblios->find($id);
+        $marc_record = $biblio->metadata->record if $biblio;
     } elsif ($type eq 'authority') {
         $marc_record = C4::AuthoritiesMarc::GetAuthority($id);
     }
