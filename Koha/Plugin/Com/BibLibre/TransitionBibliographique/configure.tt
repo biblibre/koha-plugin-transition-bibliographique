@@ -1,0 +1,151 @@
+[% USE KohaDates %]
+[% USE raw %]
+[% INCLUDE 'doc-head-open.inc' %]
+ <title>Koha: Transition Bibliographique: Configuration</title>
+[% INCLUDE 'doc-head-close.inc' %]
+[% INCLUDE 'datatables.inc' %]
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        new DataTable('#qualif-authorised-values', {
+            autoWidth: false,
+        });
+        new DataTable('#lang-authorised-values', {
+            autoWidth: false,
+        });
+        new DataTable('#codepeb-authorised-values', {
+            autoWidth: false,
+        });
+    });
+</script>
+</head>
+<body>
+    [% WRAPPER 'header.inc' %]
+        [% INCLUDE 'cat-search.inc' %]
+    [% END %]
+
+    [% WRAPPER 'sub-header.inc' %]
+        [% WRAPPER breadcrumbs %]
+            [% WRAPPER breadcrumb_item %]
+                <a href="/cgi-bin/koha/admin/admin-home.pl">Administration</a>
+            [% END %]
+            [% WRAPPER breadcrumb_item %]
+                <a href="/cgi-bin/koha/plugins/plugins-home.pl">Plugins</a>
+            [% END %]
+            [% WRAPPER breadcrumb_item %]
+                <span>Transition Bibliographique</span>
+            [% END %]
+            [% WRAPPER breadcrumb_item bc_active=1 %]
+                <span>Configuration</span>
+            [% END %]
+        [% END #/ WRAPPER breadcrumbs %]
+    [% END #/ WRAPPER sub-header.inc %]
+
+    <div id="container-main" class="container-fluid">
+        <div class="row">
+            <div class="col-md-10 order-md-2 order-sm-1">
+                <h3>Koha: Transition Bibliographique: Configuration</h3>
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <h4>qualif</h4>
+                        <table id="qualif-authorised-values">
+                            <thead>
+                                <tr>
+                                    <th>Authorised value</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                [% FOREACH authorised_value IN qualif_authorised_values %]
+                                    <tr>
+                                        <td>[% authorised_value | html %]</td>
+                                    </tr>
+                                [% END %]
+                            </tbody>
+                        </table>
+                        <form method="post" enctype="multipart/form-data">
+                            <!-- Always pass these two parameters so the plugin system knows what to execute! -->
+                            <input type="hidden" name="class" value="[% CLASS | html %]"/>
+                            <input type="hidden" name="method" value="[% METHOD | html %]"/>
+
+                        </form>
+                    </div>
+
+                    <div class="col-md-4">
+                        <h4>LANG</h4>
+                        <table id="lang-authorised-values">
+                            <thead>
+                                <tr>
+                                    <th>Authorised value</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                [% FOREACH authorised_value IN lang_authorised_values %]
+                                    <tr>
+                                        <td>[% authorised_value | html %]</td>
+                                    </tr>
+                                [% END %]
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="col-md-4">
+                        <h4>CODEPEB</h4>
+                        <table id="codepeb-authorised-values">
+                            <thead>
+                                <tr>
+                                    <th>Authorised value</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                [% FOREACH authorised_value IN codepeb_authorised_values %]
+                                    <tr>
+                                        <td>[% authorised_value | html %]</td>
+                                    </tr>
+                                [% END %]
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <form method="post" enctype="multipart/form-data" action="/cgi-bin/koha/plugins/run.pl">
+                    <input type="hidden" name="class" value="[% CLASS | html %]"/>
+                    <input type="hidden" name="method" value="[% METHOD | html %]"/>
+                    [% INCLUDE 'csrf-token.inc' %]
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="qualif" class="form-label">Update 'qualif' authorised value reference (CSV)</label>
+                                <input type="file" name="qualif" accept=".csv, text/csv" class="form-control">
+                            </div>
+
+                            <button class="btn btn-primary" type="submit">Save configuration</button>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="lang" class="form-label">Update 'LANG' authorised value reference (CSV)</label>
+                                <input type="file" name="lang" accept=".csv, text/csv" class="form-control">
+                            </div>
+
+                            <button class="btn btn-primary" type="submit">Save configuration</button>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="codepeb" class="form-label">Update 'CODEPEB' authorised value reference (CSV)</label>
+                                <input type="file" name="codepeb" accept=".csv, text/csv" class="form-control">
+                            </div>
+
+                            <button class="btn btn-primary" type="submit">Save configuration</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="col-md-2 order-md-1 order-sm-2">
+                 [% INCLUDE 'admin-menu.inc' %]
+            </div>
+        </div>
+    </div>
+
+[% INCLUDE 'intranet-bottom.inc' %]
+

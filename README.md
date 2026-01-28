@@ -38,8 +38,7 @@ transition bibliographique
 ## Audit v1
 
 1. idem que pour le plugin Koha
-2. Lancer `Koha/Plugin/Com/BibLibre/TransitionBibliographique/scripts/setup-audit-tbiblio.sh` pour créer la table des métriques
-3. Mettre
+2. Mettre
    `Koha/Plugin/Com/BibLibre/TransitionBibliographique/cron/audit-tbiblio.pl`
    en cronjob (ou le lancer manuellement)
 

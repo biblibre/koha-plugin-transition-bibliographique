@@ -1,308 +1,273 @@
 #!/usr/bin/env perl
 
 use Modern::Perl;
-use C4::Context;
+use utf8;
+use open ':std', ':encoding(UTF-8)';
 
-use Koha::Plugins;
-use Koha::Exporter::Record;
-use Koha::Plugin::Com::BibLibre::TransitionBibliographique;
+use Array::Utils qw(array_minus intersect);
+use DateTime;
+use Getopt::Long qw(:config gnu_getopt no_auto_abbrev no_ignore_case);
 
-my $table = "koha_plugin_com_biblibre_transitionbibliographique_audit_tb";
+use C4::Biblio;
+use Koha::Database;
 
-sub check_for_audit {
-  my %result;
-  say "Date : ". _get_date();
+my %opts;
+GetOptions(
+    \%opts,
+    'dry-run|n',
+    'help|h',
+) or die "Error in command line arguments\n";
 
-  say "\nCount records";
-  %result = _query_database_for_count_and_save(_get_count_biblios(), "count_biblios");
-  say $result{num_records};
+if ($opts{help}) {
+    say <<EOT;
+Usage: audit-tbiblio.pl [options...]
 
-  say "\nDefault Marc framework";
-  %result = _get_marcframework_validation ($result{id});
+Options:
+    -h, --help
+        Print this help message and exit
 
-  say "\nCount records with fields";
-  %result = _get_count_records_with_fields ($result{id});
-
-  say "\nCount BnF ARK";
-  %result =  _query_database_for_count_and_save(_get_count_ark_bnf(), "count_bnf_ark", $result{id});
-  say $result{num_records};
-
-  say "\nCount PPN";
-  %result = _query_database_for_count_and_save(_get_count_ppn_id(), "count_sudoc_ppn", $result{id});
-  say $result{num_records};
-
-  say "\nCount Others 033a";
-  %result = _query_database_for_count_and_save(_get_count_others_033a(), "count_ids_in_033a", $result{id});
-  say $result{num_records};
-
-  say "\nCount aligned Biblios";
-  %result = _query_database_for_count_and_save(_get_count_aligned_biblios(), "count_aligned_biblios", $result{id});
-  say $result{num_records};
-
+    -n, --dry-run
+        Do not save anything in database
+EOT
+    exit;
 }
 
-sub _get_date {
-  use POSIX qw(strftime);
-  return strftime "%m/%d/%Y", localtime;
-}
+my $dbh = Koha::Database->dbh;
 
-sub _get_marcframework_validation {
-    my ( $id ) = @_;
-    my %returns;
+sub green { sprintf("\033[32;1m%s\033[0m", shift) }
+sub red { sprintf("\033[31;1m%s\033[0m", shift) }
 
-    my $marcstructure = C4::Biblio::GetMarcStructure(1,'');
+say "Date : " . DateTime->now->ymd;
 
-    my $ok = "\033[32;1mv\033[0m" ;
-    my $ko = "\033[31;1mx\033[0m";
+my %audit;
 
-    my $check_marcfield_009  = $marcstructure->{'009'};
-    my $check_marcfield_010a = $marcstructure->{'010'}->{'a'};
-    my $check_marcfield_011a = $marcstructure->{'011'}->{'a'};
-    my $check_marcfield_033a = $marcstructure->{'033'}->{'a'};
-    my $check_marcfield_073a = $marcstructure->{'073'}->{'a'};
-    my $check_marcfield_181c = $marcstructure->{'181'}->{'c'};
-    my $check_marcfield_182c = $marcstructure->{'182'}->{'c'};
-    my $check_marcfield_183c = $marcstructure->{'183'}->{'c'};
-    my $check_marcfield_214  = $marcstructure->{'214'};
-    my $check_marcfield_219  = $marcstructure->{'219'};
+say "\nCount records";
+($audit{count_biblios}) = $dbh->selectrow_array('SELECT COUNT(*) FROM biblio');
+say $audit{count_biblios};
 
-    say "009:"  .  (defined($check_marcfield_009) ? $ok : $ko);
-    say "010a:" . (defined($check_marcfield_010a) ? $ok : $ko);
-    say "011a:" . (defined($check_marcfield_011a) ? $ok : $ko);
-    say "033a:" . (defined($check_marcfield_033a) ? $ok : $ko);
-    say "073a:" . (defined($check_marcfield_073a) ? $ok : $ko);
-    say "181c:" . (defined($check_marcfield_181c) ? $ok : $ko);
-    say "182c:" . (defined($check_marcfield_182c) ? $ok : $ko);
-    say "183c:" . (defined($check_marcfield_183c) ? $ok : $ko);
-    say "214:"  .  (defined($check_marcfield_214) ? $ok : $ko);
-    say "219:"  .  (defined($check_marcfield_219) ? $ok : $ko);
+say "\nDefault Marc framework";
 
-    %returns = _save_data (undef, "check_marcfield_009",  (defined($check_marcfield_009))  , $id);
-    %returns = _save_data (undef, "check_marcfield_010a", (defined($check_marcfield_010a)) , $returns{id});
-    %returns = _save_data (undef, "check_marcfield_011a", (defined($check_marcfield_011a)) , $returns{id});
-    %returns = _save_data (undef, "check_marcfield_033a", (defined($check_marcfield_033a)) , $returns{id});
-    %returns = _save_data (undef, "check_marcfield_073a", (defined($check_marcfield_073a)) , $returns{id});
-    %returns = _save_data (undef, "check_marcfield_181c", (defined($check_marcfield_181c)) , $returns{id});
-    %returns = _save_data (undef, "check_marcfield_182c", (defined($check_marcfield_182c)) , $returns{id});
-    %returns = _save_data (undef, "check_marcfield_183c", (defined($check_marcfield_183c)) , $returns{id});
-    %returns = _save_data (undef, "check_marcfield_214",  (defined($check_marcfield_214))  , $returns{id});
-    %returns = _save_data (undef, "check_marcfield_219",  (defined($check_marcfield_219))  , $returns{id});
+my $marcstructure = C4::Biblio::GetMarcStructure(1,'');
 
-    return %returns;
-}
+my $ok = green('✓');
+my $ko = red('✗ missing');
 
-sub _save_data {
-  my ( $dbh, $field, $value, $id ) = @_;
-  my %returns;
+$audit{check_marcfield_009}  = defined $marcstructure->{'009'};
+$audit{check_marcfield_010a} = defined $marcstructure->{'010'}->{'a'};
+$audit{check_marcfield_011a} = defined $marcstructure->{'011'}->{'a'};
+$audit{check_marcfield_029}  = defined $marcstructure->{'029'};
+$audit{check_marcfield_033a} = defined $marcstructure->{'033'}->{'a'};
+$audit{check_marcfield_073a} = defined $marcstructure->{'073'}->{'a'};
+$audit{check_marcfield_1012} = defined $marcstructure->{'101'}->{'2'};
+$audit{check_marcfield_181c} = defined $marcstructure->{'181'}->{'c'};
+$audit{check_marcfield_182c} = defined $marcstructure->{'182'}->{'c'};
+$audit{check_marcfield_183c} = defined $marcstructure->{'183'}->{'c'};
+$audit{check_marcfield_214}  = defined $marcstructure->{'214'};
+$audit{check_marcfield_215b} = defined $marcstructure->{'215'}->{'b'};
+$audit{check_marcfield_219}  = defined $marcstructure->{'219'};
+$audit{check_marcfield_325}  = defined $marcstructure->{'325'};
+$audit{check_marcfield_338}  = defined $marcstructure->{'338'};
+$audit{check_marcfield_371}  = defined $marcstructure->{'371'};
+$audit{check_marcfield_930j} = defined $marcstructure->{'930'}->{'j'};
+$audit{check_marcfield_930j_av_codepeb} = defined $marcstructure->{'930'}->{'j'} && $marcstructure->{'930'}->{'j'}->{'authorised_value'} eq 'CODEPEB';
 
-  $dbh = C4::Context->dbh;
-  if (defined $id) {
-    $dbh->do( "UPDATE $table SET $field = '$value' WHERE audit_id= '$id'" );
-    $returns{id} = $id;
-  } else {
-    $dbh->do( "INSERT INTO $table ( $field ) VALUES ( ? )", undef, ($value) );
-    $returns{id} = $dbh->last_insert_id( undef, undef, $table, undef );
-  }
-  return %returns;
+say "009 : " . ($audit{check_marcfield_009}  ? $ok : $ko);
+say "010a: " . ($audit{check_marcfield_010a} ? $ok : $ko);
+say "011a: " . ($audit{check_marcfield_011a} ? $ok : $ko);
+say "029 : " . ($audit{check_marcfield_029}  ? $ok : $ko);
+say "033a: " . ($audit{check_marcfield_033a} ? $ok : $ko);
+say "073a: " . ($audit{check_marcfield_073a} ? $ok : $ko);
+say "1012: " . ($audit{check_marcfield_1012} ? $ok : $ko);
+say "181c: " . ($audit{check_marcfield_181c} ? $ok : $ko);
+say "182c: " . ($audit{check_marcfield_182c} ? $ok : $ko);
+say "183c: " . ($audit{check_marcfield_183c} ? $ok : $ko);
+say "214 : " . ($audit{check_marcfield_214}  ? $ok : $ko);
+say "215b: " . ($audit{check_marcfield_215b} ? $ok : $ko);
+say "219 : " . ($audit{check_marcfield_219}  ? $ok : $ko);
+say "325 : " . ($audit{check_marcfield_325}  ? $ok : $ko);
+say "338 : " . ($audit{check_marcfield_338}  ? $ok : $ko);
+say "371 : " . ($audit{check_marcfield_371}  ? $ok : $ko);
+say "930j: " . ($audit{check_marcfield_930j} ? $ok : $ko);
+say "930j_av_codepeb: " . ($audit{check_marcfield_930j_av_codepeb} ? $ok : $ko);
 
-}
+say "\nCount records with fields";
 
-sub _query_database_for_count_and_save {
-  my ( $query, $field, $id ) = @_;
-  #say "BEFORE".$id;
-  my %returns;
-  my $dbh = C4::Context->dbh;
-  my $count_sth = $dbh->prepare($query);
-  $count_sth->execute();
-  $returns{num_records} = $count_sth->fetchrow;
-  if (defined $id) {
-    $dbh->do( "UPDATE $table SET $field = '$returns{num_records}' WHERE audit_id= '$id' ");
-    $returns{id} = $id;
+($audit{count_marcfield_003}) = $dbh->selectrow_array(q{
+    SELECT COUNT(*) FROM biblio_metadata
+    WHERE ExtractValue(metadata, 'count(//controlfield[@tag="003"])') > 0
+});
+say "003 : $audit{count_marcfield_003}";
 
-  } else {
-    $dbh->do( "INSERT INTO $table ( $field ) VALUES ( ? )", undef, ($returns{num_records}) );
-    $returns{id} = $dbh->last_insert_id( undef, undef, $table, undef );
-  }
-  #say "AFTER".$returns{id};
+($audit{count_marcfield_010a}) = $dbh->selectrow_array(q{
+    SELECT COUNT(*) FROM biblio_metadata
+    WHERE ExtractValue(metadata, 'count(//datafield[@tag="010"]/subfield[@code="a"])') > 0
+});
+say "010a: $audit{count_marcfield_010a}";
 
-  return %returns;
-}
+($audit{count_marcfield_011a}) = $dbh->selectrow_array(q{
+    SELECT COUNT(*) FROM biblio_metadata
+    WHERE ExtractValue(metadata, 'count(//datafield[@tag="011"]/subfield[@code="a"])') > 0
+});
+say "011a: $audit{count_marcfield_011a}";
 
-sub _get_count_biblios {
-  return q|
-          select count(*) from biblio;
-        |;
-}
+($audit{count_marcfield_033a}) = $dbh->selectrow_array(q{
+    SELECT COUNT(*) FROM biblio_metadata
+    WHERE ExtractValue(metadata, 'count(//datafield[@tag="033"]/subfield[@code="a"])') > 0
+});
+say "033a: $audit{count_marcfield_033a}";
 
-sub _get_count_ark_bnf {
-  # count O33a contenant ark:/12148/
-  return q|
-  select count(*) as count from biblio_metadata
-  where ExtractValue(metadata, '//datafield[@tag="033"]/subfield[@code="a"]') like "%ark:/12148/%";
-  |;
-}
+($audit{count_marcfield_073a}) = $dbh->selectrow_array(q{
+    SELECT COUNT(*) FROM biblio_metadata
+    WHERE ExtractValue(metadata, 'count(//datafield[@tag="073"]/subfield[@code="a"])') > 0
+});
+say "073a: $audit{count_marcfield_073a}";
 
-sub _get_count_ppn_id {
-  # count 009 ou O33a contient PPN* ou sudoc.fr/* ou 009=[alphanum]
-  return q|
-  select count(*) as count from biblio_metadata
-  where
-    (ExtractValue(metadata, '//datafield[@tag="033"]/subfield[@code="a"]') like "%sudoc.fr/%"
-      OR
-    ExtractValue(metadata, '//datafield[@tag="033"]/subfield[@code="a"]') like "PPN%"
-      OR
-    ExtractValue(metadata, '//controlfield[@tag="009"]') like "PPN%"
-      OR
-    ExtractValue(metadata, '//controlfield[@tag="009"]') like "%sudoc.fr/%"
-      OR
-    ExtractValue(metadata, '//controlfield[@tag="009"]') REGEXP '^[A-Za-z0-9]+$')
-    ;
-  |;
-}
+($audit{count_marcfield_181c}) = $dbh->selectrow_array(q{
+    SELECT COUNT(*) FROM biblio_metadata
+    WHERE ExtractValue(metadata, 'count(//datafield[@tag="181"]/subfield[@code="c"])') > 0
+});
+say "181c: $audit{count_marcfield_181c}";
 
-sub _get_count_others_033a {
-  # count O33a qui n'ont ni ark ni ppn et les notices avec une valeur en 033a
-  return q|
-      select count(*) as count from biblio_metadata
-      where
-        ExtractValue(metadata, '//datafield[@tag="033"]/subfield[@code="a"]') not like "%sudoc.fr/%"
-          AND
-        ExtractValue(metadata, '//datafield[@tag="033"]/subfield[@code="a"]') not like "PPN%"
-          AND
-        ExtractValue(metadata, '//datafield[@tag="033"]/subfield[@code="a"]') not like "%ark:/12148/%"
-          AND
-        ExtractValue(metadata, 'count(//datafield[@tag="033"]/subfield[@code="a"])') > 0
-    ;
-  |;
-}
+($audit{count_marcfield_182c}) = $dbh->selectrow_array(q{
+    SELECT COUNT(*) FROM biblio_metadata
+    WHERE ExtractValue(metadata, 'count(//datafield[@tag="182"]/subfield[@code="c"])') > 0
+});
+say "182c: $audit{count_marcfield_182c}";
 
-sub _get_count_aligned_biblios {
-  # count O33a contient un seul %ark:/12148/% ou un ark et un PPN ou un PPN
-  # (notice "alignée de manière unique avec un réservoir national")
-  # where  la combinatoire des clauses précédentes
-  # (count = 1 et like ark) ou (count = 1 et (like sudoc.com ou like ppn)) ou (count=2 et like ark et (like sudoc.com ou like ppn))
-  return q|
-      select count(*) as count from biblio_metadata
-      where
-        ExtractValue(metadata, '//datafield[@tag="033"]/subfield[@code="a"]') like "%sudoc.fr/%"
-          OR
-        ExtractValue(metadata, '//datafield[@tag="033"]/subfield[@code="a"]') like "PPN%"
-          OR
-        ExtractValue(metadata, '//datafield[@tag="033"]/subfield[@code="a"]') like "%ark:/12148/%"
-    ;
-  |;
-}
+($audit{count_marcfield_183c}) = $dbh->selectrow_array(q{
+    SELECT COUNT(*) FROM biblio_metadata
+    WHERE ExtractValue(metadata, 'count(//datafield[@tag="183"]/subfield[@code="c"])') > 0
+});
+say "183c: $audit{count_marcfield_183c}";
 
-sub _get_count_records_with_fields {
-  my ( $id ) = @_;
-  my %returns;
+($audit{count_marcfield_009}) = $dbh->selectrow_array(q{
+    SELECT COUNT(*) FROM biblio_metadata
+    WHERE ExtractValue(metadata, 'count(//controlfield[@tag="009"])') > 0
+});
+say "009 : $audit{count_marcfield_009}";
 
-  my $marc_ref = {
-    '010a' => {
-      field => '010',
-      subfield => 'a',
-      count => undef,
-      column => 'count_marcfield_010a'
-    },
-    '011a' => {
-      field => '011',
-      subfield => 'a',
-      count => undef,
-      column => 'count_marcfield_011a'
-    },
-    '033a' => {
-      field => '033',
-      subfield => 'a',
-      count => undef,
-      column => 'count_marcfield_033a'
-    },
-    '073a' => {
-      field => '073',
-      subfield => 'a',
-      count => undef,
-      column => 'count_marcfield_073a'
-    },
-    '181c' => {
-      field => '181',
-      subfield => 'c',
-      count => undef,
-      column => 'count_marcfield_181c'
-    },
-    '182c' => {
-      field => '182',
-      subfield => 'c',
-      count => undef,
-      column => 'count_marcfield_182c'
-    },
-    '183c' => {
-      field => '183',
-      subfield => 'c',
-      count => undef,
-      column => 'count_marcfield_183c'
-    },
-    '009' => {
-      field => '009',
-      subfield => undef,
-      count => undef,
-      column => 'count_marcfield_009'
-    },
-    '214' => {
-      field => '214',
-      subfield => undef,
-      count => undef,
-      column => 'count_marcfield_214'
-    },
-    '219' => {
-      field => '219',
-      subfield => undef,
-      count => undef,
-      column => 'count_marcfield_219'
-    }
-  };
+($audit{count_marcfield_214}) = $dbh->selectrow_array(q{
+    SELECT COUNT(*) FROM biblio_metadata
+    WHERE ExtractValue(metadata, 'count(//datafield[@tag="214"])') > 0
+});
+say "214 : $audit{count_marcfield_214}";
 
-  my $dbh = C4::Context->dbh;
-  my $query;
+($audit{count_marcfield_219}) = $dbh->selectrow_array(q{
+    SELECT COUNT(*) FROM biblio_metadata
+    WHERE ExtractValue(metadata, 'count(//datafield[@tag="219"])') > 0
+});
+say "219 : $audit{count_marcfield_219}";
 
-  foreach my $value (keys %$marc_ref) {
+# count O33a contenant ark:/12148/
+say "\nCount BnF ARK";
+($audit{count_bnf_ark}) = $dbh->selectrow_array(q{
+    SELECT COUNT(*) FROM biblio_metadata
+    WHERE ExtractValue(metadata, '//datafield[@tag="033"]/subfield[@code="a"]') LIKE "%ark:/12148/%"
+});
+say $audit{count_bnf_ark};
 
-    if (defined $marc_ref->{$value}->{"subfield"}) {
-      $query = q|
-          select count(*) as count from biblio_metadata
-          where ExtractValue(metadata, 'count(//datafield[@tag="#field#"]/subfield[@code="#subfield#"])')>0;
-        |;
-    } else {
-      $query = q|
-          select count(*) as count from biblio_metadata
-          where ExtractValue(metadata, 'count(//controlfield[@tag="#field#"])')>0;
-        |;
-    }
+# count 009 ou O33a contient PPN* ou sudoc.fr/* ou 009=[alphanum]
+say "\nCount PPN";
+($audit{count_sudoc_ppn}) = $dbh->selectrow_array(q{
+    SELECT COUNT(*) FROM biblio_metadata
+    WHERE ExtractValue(metadata, '//datafield[@tag="033"]/subfield[@code="a"]') LIKE "%sudoc.fr/%"
+      OR ExtractValue(metadata, '//datafield[@tag="033"]/subfield[@code="a"]') LIKE "PPN%"
+      OR ExtractValue(metadata, '//controlfield[@tag="009"]') LIKE "PPN%"
+      OR ExtractValue(metadata, '//controlfield[@tag="009"]') LIKE "%sudoc.fr/%"
+      OR ExtractValue(metadata, '//controlfield[@tag="009"]') REGEXP '^[A-Za-z0-9]+$'
+});
+say $audit{count_sudoc_ppn};
 
-    my $query_to_run = $query =~ s/#field#/$marc_ref->{$value}->{"field"}/r;
-    $query_to_run = $query_to_run =~ s/#subfield#/$marc_ref->{$value}->{"subfield"}/r;
+# count 033a qui n'ont ni ark ni ppn et les notices avec une valeur en 033a
+say "\nCount Others 033a";
+($audit{count_ids_in_033a}) = $dbh->selectrow_array(q{
+    SELECT COUNT(*) FROM biblio_metadata
+    WHERE ExtractValue(metadata, '//datafield[@tag="033"]/subfield[@code="a"]') NOT LIKE "%sudoc.fr/%"
+      AND ExtractValue(metadata, '//datafield[@tag="033"]/subfield[@code="a"]') NOT LIKE "PPN%"
+      AND ExtractValue(metadata, '//datafield[@tag="033"]/subfield[@code="a"]') NOT LIKE "%ark:/12148/%"
+      AND ExtractValue(metadata, 'count(//datafield[@tag="033"]/subfield[@code="a"])') > 0
+});
+say $audit{count_ids_in_033a};
 
-    #print "querytorun:".$query_to_run;
+# count O33a contient un seul %ark:/12148/% ou un ark et un PPN ou un PPN
+# (notice "alignée de manière unique avec un réservoir national")
+# where  la combinatoire des clauses précédentes
+# (count = 1 et like ark) ou (count = 1 et (like sudoc.com ou like ppn)) ou
+# (count=2 et like ark et (like sudoc.com ou like ppn))
+say "\nCount aligned Biblios";
+($audit{count_aligned_biblios}) = $dbh->selectrow_array(q{
+    SELECT COUNT(*) as count FROM biblio_metadata
+    WHERE ExtractValue(metadata, '//datafield[@tag="033"]/subfield[@code="a"]') LIKE "%sudoc.fr/%"
+      OR ExtractValue(metadata, '//datafield[@tag="033"]/subfield[@code="a"]') LIKE "PPN%"
+      OR ExtractValue(metadata, '//datafield[@tag="033"]/subfield[@code="a"]') LIKE "%ark:/12148/%"
+});
+say $audit{count_aligned_biblios};
 
-    my $count_sth = $dbh->prepare($query_to_run);
-    $count_sth->execute(  );
-    my ( $num_records ) = $count_sth->fetchrow;
+say "\nAuthorised values";
+my @audit_av;
+foreach my $category (qw(qualif LANG CODEPEB)) {
+    my $ref_values = $dbh->selectcol_arrayref("SELECT authorised_value FROM koha_plugin_com_biblibre_transitionbibliographique_av WHERE category = ?", undef, $category);
+    my $values = $dbh->selectcol_arrayref("SELECT authorised_value FROM authorised_values WHERE category = ?", undef, $category);
 
-    print "$value : ".$num_records."\n";
-    $marc_ref->{$value}->{"count"} = $num_records;
-  }
-  if (defined $id) {
-    $returns{id} = $id;
-  }
-  foreach my $value (keys %$marc_ref) {
-    %returns = _save_data (
-      $dbh,
-      $marc_ref->{$value}->{"column"},
-      $marc_ref->{$value}->{"count"},
-      $returns{id}
+    my @missing_values = array_minus(@$ref_values, @$values);
+    my @invalid_values = array_minus(@$values, @$ref_values);
+    my @valid_values = intersect(@$ref_values, @$values);
+
+    my @category_audit_av = (
+        (map { { category => $category, authorised_value => $_, is_missing => 0, is_invalid => 0 } } @valid_values),
+        (map { { category => $category, authorised_value => $_, is_missing => 1, is_invalid => 0 } } @missing_values),
+        (map { { category => $category, authorised_value => $_, is_missing => 0, is_invalid => 1 } } @invalid_values),
     );
+    @category_audit_av = sort { $a->{authorised_value} cmp $b->{authorised_value} } @category_audit_av;
 
-  }
-  return %returns;
+    push @audit_av, @category_audit_av;
 
+    say "\n$category";
+    foreach my $av (@category_audit_av) {
+        my $status = $av->{is_missing} ? red('✗ missing') :
+            $av->{is_invalid} ? red('✗ invalid') : green('✓');
+        say sprintf('%s: %s', $av->{authorised_value}, $status);
+    }
 }
 
-check_for_audit();
+my $audit_auth_results = $dbh->selectall_arrayref(
+    "
+        SELECT auth_types.authtypecode, IF(auth_subfield_structure.authtypecode IS NULL, 0, 1) check_marcfield_1012
+        FROM auth_types LEFT JOIN auth_subfield_structure ON (
+            auth_types.authtypecode = auth_subfield_structure.authtypecode
+            AND auth_subfield_structure.tagfield = '101'
+            AND auth_subfield_structure.tagsubfield = '2'
+        )
+        ORDER BY auth_types.authtypecode
+    ",
+    { Slice => {} },
+);
+
+say "\nAuthority types";
+foreach my $result (@$audit_auth_results) {
+    my $status = $result->{check_marcfield_1012} ? green('✓') : red('✗ missing');
+    say sprintf('%10s 101$2: %s', $result->{authtypecode} || '[Default]', $status);
+}
+
+unless ($opts{'dry-run'}) {
+    my @insert_set_clauses;
+    my @insert_bind_values;
+    while (my ($key, $value) = each %audit) {
+        push @insert_set_clauses, sprintf('%s = ?', $dbh->quote_identifier($key));
+        push @insert_bind_values, $value;
+    }
+
+    my $insert_sql = 'INSERT koha_plugin_com_biblibre_transitionbibliographique_audit_tb SET ' . join(', ', @insert_set_clauses);
+    $dbh->do($insert_sql, undef, @insert_bind_values);
+    my $audit_id = $dbh->last_insert_id();
+
+    my $av_sth = $dbh->prepare('INSERT koha_plugin_com_biblibre_transitionbibliographique_audit_av SET audit_id = ?, category = ?, authorised_value = ?, is_missing = ?, is_invalid = ?');
+    foreach my $av (@audit_av) {
+        $av_sth->execute($audit_id, $av->{category}, $av->{authorised_value}, $av->{is_missing}, $av->{is_invalid});
+    }
+
+    my $auth_sth = $dbh->prepare('INSERT koha_plugin_com_biblibre_transitionbibliographique_audit_auth SET audit_id = ?, authtypecode = ?, check_marcfield_1012 = ?');
+    foreach my $result (@$audit_auth_results) {
+        $auth_sth->execute($audit_id, $result->{authtypecode}, $result->{check_marcfield_1012});
+    }
+}
